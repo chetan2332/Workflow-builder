@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": ["nodeId", "name", "nodeType", "shape", "handles"],
+    "properties": {
+      "nodeId": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "nodeType": {
+        "type": "string",
+        "enum": ["TRIGGER", "CODE", "CONDITION", "OTHER"]
+      },
+      "description": {
+        "type": "string"
+      },
+      "shape": {
+        "type": "string",
+        "enum": ["circle", "roundedRectangle", "oppositeD", "D"]
+      },
+      "handles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "side", "kind", "type"],
+          "properties": {
+            "id": { "type": "string" },
+            "side": {
+              "type": "string",
+              "enum": ["left", "right", "top", "bottom"]
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["input", "output"]
+            },
+            "type": { "type": "string", "enum": ["flow", "integer", "string", "boolean"] },
+            "label": { "type": "string" }
+          }
+        }
+      },
+      "action": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "label", "type"],
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["string", "number", "textarea"]
+                },
+                "defaultValue": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }

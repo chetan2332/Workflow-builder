@@ -1,0 +1,22 @@
+{
+  "nodeId": "START",
+  "name": "Start",
+  "nodeType": "TRIGGER",
+  "description": "Entry point for the workflow.",
+  "shape": "oppositeD",
+  "handles": [
+    {
+      "id": "out",
+      "side": "right",
+      "kind": "output",
+      "type": "flow",
+      "label": "start"
+    }
+  ],
+  "action": {
+    "title": "Configure Start",
+    "description": "Enter initial parameters for the workflow.",
+    "fields": []
+  }
+}
+

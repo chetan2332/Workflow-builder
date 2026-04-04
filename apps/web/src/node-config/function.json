@@ -1,0 +1,41 @@
+{
+  "nodeId": "FUNCTION",
+  "name": "Function",
+  "nodeType": "CODE",
+  "description": "Run a custom function.",
+  "shape": "roundedRectangle",
+  "handles": [
+    {
+      "id": "in-1",
+      "side": "left",
+      "kind": "input",
+      "type": "flow",
+      "label": "in"
+    },
+    {
+      "id": "out",
+      "side": "right",
+      "kind": "output",
+      "type": "flow",
+      "label": "out"
+    }
+  ],
+  "action": {
+    "title": "Configure Function",
+    "description": "Set number of inputs and function code.",
+    "fields": [
+      {
+        "id": "inputHandleCount",
+        "label": "Number of input handles",
+        "type": "number",
+        "defaultValue": 1
+      },
+      {
+        "id": "code",
+        "label": "Function code",
+        "type": "textarea"
+      }
+    ]
+  }
+}
+

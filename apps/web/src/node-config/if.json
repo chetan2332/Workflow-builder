@@ -1,0 +1,48 @@
+{
+  "nodeId": "IF",
+  "name": "If",
+  "nodeType": "CONDITION",
+  "description": "Branch based on a condition.",
+  "shape": "circle",
+  "handles": [
+    {
+      "id": "in-1",
+      "side": "left",
+      "kind": "input",
+      "type": "flow",
+      "label": "in"
+    },
+    {
+      "id": "out-true",
+      "side": "right",
+      "kind": "output",
+      "type": "flow",
+      "label": "true"
+    },
+    {
+      "id": "out-false",
+      "side": "right",
+      "kind": "output",
+      "type": "flow",
+      "label": "false"
+    }
+  ],
+  "action": {
+    "title": "Configure If",
+    "description": "Set number of inputs and condition code.",
+    "fields": [
+      {
+        "id": "inputHandleCount",
+        "label": "Number of input handles",
+        "type": "number",
+        "defaultValue": 1
+      },
+      {
+        "id": "code",
+        "label": "Condition code",
+        "type": "textarea"
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,28 @@
+{
+  "nodeId": "INPUT",
+  "name": "Input",
+  "nodeType": "OTHER",
+  "description": "Provide input values.",
+  "shape": "circle",
+  "handles": [
+    {
+      "id": "out",
+      "side": "right",
+      "kind": "output",
+      "type": "flow",
+      "label": "out"
+    }
+  ],
+  "action": {
+    "title": "Configure Input",
+    "description": "Enter the input text.",
+    "fields": [
+      {
+        "id": "text",
+        "label": "Text",
+        "type": "string"
+      }
+    ]
+  }
+}
+

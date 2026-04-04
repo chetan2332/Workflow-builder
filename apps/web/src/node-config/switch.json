@@ -1,0 +1,52 @@
+{
+  "nodeId": "SWITCH",
+  "name": "Switch",
+  "nodeType": "CONDITION",
+  "description": "Branch based on multiple cases.",
+  "shape": "circle",
+  "handles": [
+    {
+      "id": "in-1",
+      "side": "left",
+      "kind": "input",
+      "type": "flow",
+      "label": "in"
+    },
+    {
+      "id": "out-1",
+      "side": "right",
+      "kind": "output",
+      "type": "flow",
+      "label": "case 1"
+    }
+  ],
+  "action": {
+    "title": "Configure Switch",
+    "description": "Set number of inputs, outputs and switch code.",
+    "fields": [
+      {
+        "id": "inputHandleCount",
+        "label": "Number of input handles",
+        "type": "number",
+        "defaultValue": 1
+      },
+      {
+        "id": "outputHandleCount",
+        "label": "Number of output handles",
+        "type": "number",
+        "defaultValue": 1
+      },
+      {
+        "id": "outputLabels",
+        "label": "Output labels (comma separated)",
+        "type": "string"
+      },
+      {
+        "id": "code",
+        "label": "Switch code",
+        "type": "textarea"
+      }
+    ]
+  }
+}
+
