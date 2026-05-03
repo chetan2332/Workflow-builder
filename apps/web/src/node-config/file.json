@@ -1,0 +1,46 @@
+{
+  "nodeId": "FILE",
+  "name": "File",
+  "nodeType": "CODE",
+  "description": "Reads a user file and emits metadata or content.",
+  "shape": "roundedRectangle",
+  "handles": [
+    {
+      "id": "in",
+      "side": "left",
+      "kind": "input",
+      "type": "flow",
+      "label": "in"
+    },
+    {
+      "id": "out",
+      "side": "right",
+      "kind": "output",
+      "type": "json",
+      "label": "out"
+    }
+  ],
+  "action": {
+    "title": "Configure File",
+    "description": "Select a file and read mode.",
+    "fields": [
+      {
+        "id": "fileId",
+        "label": "File",
+        "type": "fileRef",
+        "required": true
+      },
+      {
+        "id": "readMode",
+        "label": "Read mode",
+        "type": "enum",
+        "options": [
+          { "value": "metadata", "label": "Metadata only" },
+          { "value": "text", "label": "Text content" },
+          { "value": "bytes", "label": "Binary data" }
+        ],
+        "defaultValue": "metadata"
+      }
+    ]
+  }
+}

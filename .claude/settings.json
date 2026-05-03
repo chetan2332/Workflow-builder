@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Read(//tmp/n8n-repo/**)",
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")",
+      "Read(//tmp/n8n-repo/packages/core/src/execution-engine/**)",
+      "Read(//c/tmp/n8n-repo/packages/core/src/execution-engine/**)",
+      "Bash(curl -X POST http://localhost:3001/node-execution -H 'Content-Type: application/json' -d '{:*)",
+      "Bash(pnpm build:*)"
+    ]
+  }
+}

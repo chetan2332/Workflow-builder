@@ -1,35 +1,23 @@
-export type NodeType = 'TRIGGER' | 'CODE' | 'CONDITION' | 'OTHER';
+import type {
+  NodeType,
+  NodeShape,
+  HandleConfig,
+  ActionFieldType,
+  ActionField,
+  NodeActionConfig,
+} from '@n8n-project/shared';
 
-export type NodeShape = 'circle' | 'oppositeD' | 'roundedRectangle';
-
-export type HandleSide = 'left' | 'right' | 'top' | 'bottom';
-
-export type HandleKind = 'input' | 'output';
-
-export type HandleConfig = {
-  id: string;
-  side: HandleSide;
-  kind: HandleKind;
-  type: string;
-  label?: string;
+// Re-export for backward compatibility
+export type {
+  NodeType,
+  NodeShape,
+  HandleConfig,
+  ActionFieldType,
+  ActionField,
+  NodeActionConfig,
 };
 
-export type ActionFieldType = 'string' | 'number' | 'textarea' | 'select';
-
-export type ActionField = {
-  id: string;
-  label: string;
-  type: ActionFieldType;
-  defaultValue?: string | number;
-  required?: boolean;
-};
-
-export type NodeActionConfig = {
-  title: string;
-  description?: string;
-  fields: ActionField[];
-};
-
+// Frontend-specific types (NOT in shared package)
 export type NodeTemplateConfig = {
   nodeId: string;
   name: string;
@@ -38,5 +26,30 @@ export type NodeTemplateConfig = {
   shape: NodeShape;
   handles: HandleConfig[];
   action?: NodeActionConfig;
+  dynamicHandles?: {
+    inputs: boolean;
+    outputs: boolean;
+  };
+};
+
+export type EdgeData = {
+  data?: unknown;
+  executedAt?: number;
+  status?: 'pending' | 'success' | 'error';
+  error?: string;
+  executionTimeMs?: number;
+  dataType?: 'flow' | 'json';
+};
+
+export type NodeDefinitionId = string;
+
+export type WorkflowNodeData = {
+  label?: string;
+  definitionId: NodeDefinitionId;
+  actionState?: Record<string, unknown>;
+  isDummy?: boolean;
+  sourceNodeId?: string;
+  sourceHandleId?: string;
+  onDummyClick?: (dummyId: string, data: WorkflowNodeData) => void;
 };
 

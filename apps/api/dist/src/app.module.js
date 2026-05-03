@@ -12,7 +12,10 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const prisma_module_1 = require("./prisma/prisma.module");
 const workflows_module_1 = require("./workflows/workflows.module");
+const templates_module_1 = require("./templates/templates.module");
+const execution_module_1 = require("./execution/execution.module");
 const config_1 = require("@nestjs/config");
+const cache_manager_1 = require("@nestjs/cache-manager");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -22,8 +25,15 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),
+            cache_manager_1.CacheModule.register({
+                isGlobal: true,
+                ttl: 3600000,
+                max: 100,
+            }),
             prisma_module_1.PrismaModule,
+            templates_module_1.TemplatesModule,
             workflows_module_1.WorkflowsModule,
+            execution_module_1.ExecutionModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

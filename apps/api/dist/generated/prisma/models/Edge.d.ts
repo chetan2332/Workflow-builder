@@ -188,7 +188,7 @@ export type EdgeScalarWhereWithAggregatesInput = {
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Edge"> | Date | string;
 };
 export type EdgeCreateInput = {
-    id?: string;
+    id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
     meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
@@ -199,7 +199,7 @@ export type EdgeCreateInput = {
     targetNode: Prisma.NodeCreateNestedOneWithoutIncomingEdgesInput;
 };
 export type EdgeUncheckedCreateInput = {
-    id?: string;
+    id: string;
     workflowId: string;
     sourceNodeId: string;
     targetNodeId: string;
@@ -232,7 +232,7 @@ export type EdgeUncheckedUpdateInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeCreateManyInput = {
-    id?: string;
+    id: string;
     workflowId: string;
     sourceNodeId: string;
     targetNodeId: string;
@@ -415,7 +415,7 @@ export type EdgeUncheckedUpdateManyWithoutTargetNodeNestedInput = {
     deleteMany?: Prisma.EdgeScalarWhereInput | Prisma.EdgeScalarWhereInput[];
 };
 export type EdgeCreateWithoutWorkflowInput = {
-    id?: string;
+    id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
     meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
@@ -425,7 +425,7 @@ export type EdgeCreateWithoutWorkflowInput = {
     targetNode: Prisma.NodeCreateNestedOneWithoutIncomingEdgesInput;
 };
 export type EdgeUncheckedCreateWithoutWorkflowInput = {
-    id?: string;
+    id: string;
     sourceNodeId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
@@ -470,7 +470,7 @@ export type EdgeScalarWhereInput = {
     updatedAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
 };
 export type EdgeCreateWithoutSourceNodeInput = {
-    id?: string;
+    id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
     meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
@@ -480,7 +480,7 @@ export type EdgeCreateWithoutSourceNodeInput = {
     targetNode: Prisma.NodeCreateNestedOneWithoutIncomingEdgesInput;
 };
 export type EdgeUncheckedCreateWithoutSourceNodeInput = {
-    id?: string;
+    id: string;
     workflowId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
@@ -498,7 +498,7 @@ export type EdgeCreateManySourceNodeInputEnvelope = {
     skipDuplicates?: boolean;
 };
 export type EdgeCreateWithoutTargetNodeInput = {
-    id?: string;
+    id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
     meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
@@ -508,7 +508,7 @@ export type EdgeCreateWithoutTargetNodeInput = {
     sourceNode: Prisma.NodeCreateNestedOneWithoutOutgoingEdgesInput;
 };
 export type EdgeUncheckedCreateWithoutTargetNodeInput = {
-    id?: string;
+    id: string;
     workflowId: string;
     sourceNodeId: string;
     sourceHandle?: string | null;
@@ -552,7 +552,7 @@ export type EdgeUpdateManyWithWhereWithoutTargetNodeInput = {
     data: Prisma.XOR<Prisma.EdgeUpdateManyMutationInput, Prisma.EdgeUncheckedUpdateManyWithoutTargetNodeInput>;
 };
 export type EdgeCreateManyWorkflowInput = {
-    id?: string;
+    id: string;
     sourceNodeId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
@@ -592,7 +592,7 @@ export type EdgeUncheckedUpdateManyWithoutWorkflowInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeCreateManySourceNodeInput = {
-    id?: string;
+    id: string;
     workflowId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
@@ -602,7 +602,7 @@ export type EdgeCreateManySourceNodeInput = {
     updatedAt?: Date | string;
 };
 export type EdgeCreateManyTargetNodeInput = {
-    id?: string;
+    id: string;
     workflowId: string;
     sourceNodeId: string;
     sourceHandle?: string | null;

@@ -1,0 +1,15 @@
+{
+  "name": "@n8n-project/shared",
+  "version": "1.0.0",
+  "description": "Shared types for n8n workflow automation platform",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

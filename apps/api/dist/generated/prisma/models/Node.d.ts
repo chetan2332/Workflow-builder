@@ -1,5 +1,4 @@
 import type * as runtime from "@prisma/client/runtime/client";
-import type * as $Enums from "../enums.js";
 import type * as Prisma from "../internal/prismaNamespace.js";
 export type NodeModel = runtime.Types.Result.DefaultSelection<Prisma.$NodePayload>;
 export type AggregateNode = {
@@ -20,7 +19,8 @@ export type NodeSumAggregateOutputType = {
 export type NodeMinAggregateOutputType = {
     id: string | null;
     workflowId: string | null;
-    type: $Enums.NodeType | null;
+    templateId: string | null;
+    templateVersion: string | null;
     label: string | null;
     positionX: number | null;
     positionY: number | null;
@@ -30,7 +30,8 @@ export type NodeMinAggregateOutputType = {
 export type NodeMaxAggregateOutputType = {
     id: string | null;
     workflowId: string | null;
-    type: $Enums.NodeType | null;
+    templateId: string | null;
+    templateVersion: string | null;
     label: string | null;
     positionX: number | null;
     positionY: number | null;
@@ -40,11 +41,12 @@ export type NodeMaxAggregateOutputType = {
 export type NodeCountAggregateOutputType = {
     id: number;
     workflowId: number;
-    type: number;
+    templateId: number;
+    templateVersion: number;
     label: number;
     positionX: number;
     positionY: number;
-    config: number;
+    actionState: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -60,7 +62,8 @@ export type NodeSumAggregateInputType = {
 export type NodeMinAggregateInputType = {
     id?: true;
     workflowId?: true;
-    type?: true;
+    templateId?: true;
+    templateVersion?: true;
     label?: true;
     positionX?: true;
     positionY?: true;
@@ -70,7 +73,8 @@ export type NodeMinAggregateInputType = {
 export type NodeMaxAggregateInputType = {
     id?: true;
     workflowId?: true;
-    type?: true;
+    templateId?: true;
+    templateVersion?: true;
     label?: true;
     positionX?: true;
     positionY?: true;
@@ -80,11 +84,12 @@ export type NodeMaxAggregateInputType = {
 export type NodeCountAggregateInputType = {
     id?: true;
     workflowId?: true;
-    type?: true;
+    templateId?: true;
+    templateVersion?: true;
     label?: true;
     positionX?: true;
     positionY?: true;
-    config?: true;
+    actionState?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -120,11 +125,12 @@ export type NodeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type NodeGroupByOutputType = {
     id: string;
     workflowId: string;
-    type: $Enums.NodeType;
+    templateId: string;
+    templateVersion: string;
     label: string | null;
     positionX: number;
     positionY: number;
-    config: runtime.JsonValue;
+    actionState: runtime.JsonValue;
     createdAt: Date;
     updatedAt: Date;
     _count: NodeCountAggregateOutputType | null;
@@ -142,28 +148,32 @@ export type NodeWhereInput = {
     NOT?: Prisma.NodeWhereInput | Prisma.NodeWhereInput[];
     id?: Prisma.StringFilter<"Node"> | string;
     workflowId?: Prisma.StringFilter<"Node"> | string;
-    type?: Prisma.EnumNodeTypeFilter<"Node"> | $Enums.NodeType;
+    templateId?: Prisma.StringFilter<"Node"> | string;
+    templateVersion?: Prisma.StringFilter<"Node"> | string;
     label?: Prisma.StringNullableFilter<"Node"> | string | null;
     positionX?: Prisma.FloatFilter<"Node"> | number;
     positionY?: Prisma.FloatFilter<"Node"> | number;
-    config?: Prisma.JsonFilter<"Node">;
+    actionState?: Prisma.JsonFilter<"Node">;
     createdAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
     workflow?: Prisma.XOR<Prisma.WorkflowScalarRelationFilter, Prisma.WorkflowWhereInput>;
+    template?: Prisma.XOR<Prisma.NodeTemplateScalarRelationFilter, Prisma.NodeTemplateWhereInput>;
     outgoingEdges?: Prisma.EdgeListRelationFilter;
     incomingEdges?: Prisma.EdgeListRelationFilter;
 };
 export type NodeOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     workflowId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    templateId?: Prisma.SortOrder;
+    templateVersion?: Prisma.SortOrder;
     label?: Prisma.SortOrderInput | Prisma.SortOrder;
     positionX?: Prisma.SortOrder;
     positionY?: Prisma.SortOrder;
-    config?: Prisma.SortOrder;
+    actionState?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     workflow?: Prisma.WorkflowOrderByWithRelationInput;
+    template?: Prisma.NodeTemplateOrderByWithRelationInput;
     outgoingEdges?: Prisma.EdgeOrderByRelationAggregateInput;
     incomingEdges?: Prisma.EdgeOrderByRelationAggregateInput;
 };
@@ -173,25 +183,28 @@ export type NodeWhereUniqueInput = Prisma.AtLeast<{
     OR?: Prisma.NodeWhereInput[];
     NOT?: Prisma.NodeWhereInput | Prisma.NodeWhereInput[];
     workflowId?: Prisma.StringFilter<"Node"> | string;
-    type?: Prisma.EnumNodeTypeFilter<"Node"> | $Enums.NodeType;
+    templateId?: Prisma.StringFilter<"Node"> | string;
+    templateVersion?: Prisma.StringFilter<"Node"> | string;
     label?: Prisma.StringNullableFilter<"Node"> | string | null;
     positionX?: Prisma.FloatFilter<"Node"> | number;
     positionY?: Prisma.FloatFilter<"Node"> | number;
-    config?: Prisma.JsonFilter<"Node">;
+    actionState?: Prisma.JsonFilter<"Node">;
     createdAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
     workflow?: Prisma.XOR<Prisma.WorkflowScalarRelationFilter, Prisma.WorkflowWhereInput>;
+    template?: Prisma.XOR<Prisma.NodeTemplateScalarRelationFilter, Prisma.NodeTemplateWhereInput>;
     outgoingEdges?: Prisma.EdgeListRelationFilter;
     incomingEdges?: Prisma.EdgeListRelationFilter;
 }, "id">;
 export type NodeOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     workflowId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    templateId?: Prisma.SortOrder;
+    templateVersion?: Prisma.SortOrder;
     label?: Prisma.SortOrderInput | Prisma.SortOrder;
     positionX?: Prisma.SortOrder;
     positionY?: Prisma.SortOrder;
-    config?: Prisma.SortOrder;
+    actionState?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.NodeCountOrderByAggregateInput;
@@ -206,35 +219,37 @@ export type NodeScalarWhereWithAggregatesInput = {
     NOT?: Prisma.NodeScalarWhereWithAggregatesInput | Prisma.NodeScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"Node"> | string;
     workflowId?: Prisma.StringWithAggregatesFilter<"Node"> | string;
-    type?: Prisma.EnumNodeTypeWithAggregatesFilter<"Node"> | $Enums.NodeType;
+    templateId?: Prisma.StringWithAggregatesFilter<"Node"> | string;
+    templateVersion?: Prisma.StringWithAggregatesFilter<"Node"> | string;
     label?: Prisma.StringNullableWithAggregatesFilter<"Node"> | string | null;
     positionX?: Prisma.FloatWithAggregatesFilter<"Node"> | number;
     positionY?: Prisma.FloatWithAggregatesFilter<"Node"> | number;
-    config?: Prisma.JsonWithAggregatesFilter<"Node">;
+    actionState?: Prisma.JsonWithAggregatesFilter<"Node">;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Node"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Node"> | Date | string;
 };
 export type NodeCreateInput = {
-    id?: string;
-    type: $Enums.NodeType;
+    id: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     workflow: Prisma.WorkflowCreateNestedOneWithoutNodesInput;
+    template: Prisma.NodeTemplateCreateNestedOneWithoutNodesInput;
     outgoingEdges?: Prisma.EdgeCreateNestedManyWithoutSourceNodeInput;
     incomingEdges?: Prisma.EdgeCreateNestedManyWithoutTargetNodeInput;
 };
 export type NodeUncheckedCreateInput = {
-    id?: string;
+    id: string;
     workflowId: string;
-    type: $Enums.NodeType;
+    templateId: string;
+    templateVersion?: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     outgoingEdges?: Prisma.EdgeUncheckedCreateNestedManyWithoutSourceNodeInput;
@@ -242,59 +257,61 @@ export type NodeUncheckedCreateInput = {
 };
 export type NodeUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     workflow?: Prisma.WorkflowUpdateOneRequiredWithoutNodesNestedInput;
+    template?: Prisma.NodeTemplateUpdateOneRequiredWithoutNodesNestedInput;
     outgoingEdges?: Prisma.EdgeUpdateManyWithoutSourceNodeNestedInput;
     incomingEdges?: Prisma.EdgeUpdateManyWithoutTargetNodeNestedInput;
 };
 export type NodeUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
+    templateId?: Prisma.StringFieldUpdateOperationsInput | string;
+    templateVersion?: Prisma.StringFieldUpdateOperationsInput | string;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     outgoingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutSourceNodeNestedInput;
     incomingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutTargetNodeNestedInput;
 };
 export type NodeCreateManyInput = {
-    id?: string;
+    id: string;
     workflowId: string;
-    type: $Enums.NodeType;
+    templateId: string;
+    templateVersion?: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type NodeUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type NodeUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
+    templateId?: Prisma.StringFieldUpdateOperationsInput | string;
+    templateVersion?: Prisma.StringFieldUpdateOperationsInput | string;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -309,11 +326,12 @@ export type NodeOrderByRelationAggregateInput = {
 export type NodeCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     workflowId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    templateId?: Prisma.SortOrder;
+    templateVersion?: Prisma.SortOrder;
     label?: Prisma.SortOrder;
     positionX?: Prisma.SortOrder;
     positionY?: Prisma.SortOrder;
-    config?: Prisma.SortOrder;
+    actionState?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -324,7 +342,8 @@ export type NodeAvgOrderByAggregateInput = {
 export type NodeMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     workflowId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    templateId?: Prisma.SortOrder;
+    templateVersion?: Prisma.SortOrder;
     label?: Prisma.SortOrder;
     positionX?: Prisma.SortOrder;
     positionY?: Prisma.SortOrder;
@@ -334,7 +353,8 @@ export type NodeMaxOrderByAggregateInput = {
 export type NodeMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     workflowId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    templateId?: Prisma.SortOrder;
+    templateVersion?: Prisma.SortOrder;
     label?: Prisma.SortOrder;
     positionX?: Prisma.SortOrder;
     positionY?: Prisma.SortOrder;
@@ -348,6 +368,44 @@ export type NodeSumOrderByAggregateInput = {
 export type NodeScalarRelationFilter = {
     is?: Prisma.NodeWhereInput;
     isNot?: Prisma.NodeWhereInput;
+};
+export type NodeCreateNestedManyWithoutTemplateInput = {
+    create?: Prisma.XOR<Prisma.NodeCreateWithoutTemplateInput, Prisma.NodeUncheckedCreateWithoutTemplateInput> | Prisma.NodeCreateWithoutTemplateInput[] | Prisma.NodeUncheckedCreateWithoutTemplateInput[];
+    connectOrCreate?: Prisma.NodeCreateOrConnectWithoutTemplateInput | Prisma.NodeCreateOrConnectWithoutTemplateInput[];
+    createMany?: Prisma.NodeCreateManyTemplateInputEnvelope;
+    connect?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+};
+export type NodeUncheckedCreateNestedManyWithoutTemplateInput = {
+    create?: Prisma.XOR<Prisma.NodeCreateWithoutTemplateInput, Prisma.NodeUncheckedCreateWithoutTemplateInput> | Prisma.NodeCreateWithoutTemplateInput[] | Prisma.NodeUncheckedCreateWithoutTemplateInput[];
+    connectOrCreate?: Prisma.NodeCreateOrConnectWithoutTemplateInput | Prisma.NodeCreateOrConnectWithoutTemplateInput[];
+    createMany?: Prisma.NodeCreateManyTemplateInputEnvelope;
+    connect?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+};
+export type NodeUpdateManyWithoutTemplateNestedInput = {
+    create?: Prisma.XOR<Prisma.NodeCreateWithoutTemplateInput, Prisma.NodeUncheckedCreateWithoutTemplateInput> | Prisma.NodeCreateWithoutTemplateInput[] | Prisma.NodeUncheckedCreateWithoutTemplateInput[];
+    connectOrCreate?: Prisma.NodeCreateOrConnectWithoutTemplateInput | Prisma.NodeCreateOrConnectWithoutTemplateInput[];
+    upsert?: Prisma.NodeUpsertWithWhereUniqueWithoutTemplateInput | Prisma.NodeUpsertWithWhereUniqueWithoutTemplateInput[];
+    createMany?: Prisma.NodeCreateManyTemplateInputEnvelope;
+    set?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    disconnect?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    delete?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    connect?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    update?: Prisma.NodeUpdateWithWhereUniqueWithoutTemplateInput | Prisma.NodeUpdateWithWhereUniqueWithoutTemplateInput[];
+    updateMany?: Prisma.NodeUpdateManyWithWhereWithoutTemplateInput | Prisma.NodeUpdateManyWithWhereWithoutTemplateInput[];
+    deleteMany?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
+};
+export type NodeUncheckedUpdateManyWithoutTemplateNestedInput = {
+    create?: Prisma.XOR<Prisma.NodeCreateWithoutTemplateInput, Prisma.NodeUncheckedCreateWithoutTemplateInput> | Prisma.NodeCreateWithoutTemplateInput[] | Prisma.NodeUncheckedCreateWithoutTemplateInput[];
+    connectOrCreate?: Prisma.NodeCreateOrConnectWithoutTemplateInput | Prisma.NodeCreateOrConnectWithoutTemplateInput[];
+    upsert?: Prisma.NodeUpsertWithWhereUniqueWithoutTemplateInput | Prisma.NodeUpsertWithWhereUniqueWithoutTemplateInput[];
+    createMany?: Prisma.NodeCreateManyTemplateInputEnvelope;
+    set?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    disconnect?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    delete?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    connect?: Prisma.NodeWhereUniqueInput | Prisma.NodeWhereUniqueInput[];
+    update?: Prisma.NodeUpdateWithWhereUniqueWithoutTemplateInput | Prisma.NodeUpdateWithWhereUniqueWithoutTemplateInput[];
+    updateMany?: Prisma.NodeUpdateManyWithWhereWithoutTemplateInput | Prisma.NodeUpdateManyWithWhereWithoutTemplateInput[];
+    deleteMany?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
 };
 export type NodeCreateNestedManyWithoutWorkflowInput = {
     create?: Prisma.XOR<Prisma.NodeCreateWithoutWorkflowInput, Prisma.NodeUncheckedCreateWithoutWorkflowInput> | Prisma.NodeCreateWithoutWorkflowInput[] | Prisma.NodeUncheckedCreateWithoutWorkflowInput[];
@@ -387,9 +445,6 @@ export type NodeUncheckedUpdateManyWithoutWorkflowNestedInput = {
     updateMany?: Prisma.NodeUpdateManyWithWhereWithoutWorkflowInput | Prisma.NodeUpdateManyWithWhereWithoutWorkflowInput[];
     deleteMany?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
 };
-export type EnumNodeTypeFieldUpdateOperationsInput = {
-    set?: $Enums.NodeType;
-};
 export type FloatFieldUpdateOperationsInput = {
     set?: number;
     increment?: number;
@@ -421,25 +476,86 @@ export type NodeUpdateOneRequiredWithoutIncomingEdgesNestedInput = {
     connect?: Prisma.NodeWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.NodeUpdateToOneWithWhereWithoutIncomingEdgesInput, Prisma.NodeUpdateWithoutIncomingEdgesInput>, Prisma.NodeUncheckedUpdateWithoutIncomingEdgesInput>;
 };
-export type NodeCreateWithoutWorkflowInput = {
-    id?: string;
-    type: $Enums.NodeType;
+export type NodeCreateWithoutTemplateInput = {
+    id: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    workflow: Prisma.WorkflowCreateNestedOneWithoutNodesInput;
+    outgoingEdges?: Prisma.EdgeCreateNestedManyWithoutSourceNodeInput;
+    incomingEdges?: Prisma.EdgeCreateNestedManyWithoutTargetNodeInput;
+};
+export type NodeUncheckedCreateWithoutTemplateInput = {
+    id: string;
+    workflowId: string;
+    label?: string | null;
+    positionX: number;
+    positionY: number;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    outgoingEdges?: Prisma.EdgeUncheckedCreateNestedManyWithoutSourceNodeInput;
+    incomingEdges?: Prisma.EdgeUncheckedCreateNestedManyWithoutTargetNodeInput;
+};
+export type NodeCreateOrConnectWithoutTemplateInput = {
+    where: Prisma.NodeWhereUniqueInput;
+    create: Prisma.XOR<Prisma.NodeCreateWithoutTemplateInput, Prisma.NodeUncheckedCreateWithoutTemplateInput>;
+};
+export type NodeCreateManyTemplateInputEnvelope = {
+    data: Prisma.NodeCreateManyTemplateInput | Prisma.NodeCreateManyTemplateInput[];
+    skipDuplicates?: boolean;
+};
+export type NodeUpsertWithWhereUniqueWithoutTemplateInput = {
+    where: Prisma.NodeWhereUniqueInput;
+    update: Prisma.XOR<Prisma.NodeUpdateWithoutTemplateInput, Prisma.NodeUncheckedUpdateWithoutTemplateInput>;
+    create: Prisma.XOR<Prisma.NodeCreateWithoutTemplateInput, Prisma.NodeUncheckedCreateWithoutTemplateInput>;
+};
+export type NodeUpdateWithWhereUniqueWithoutTemplateInput = {
+    where: Prisma.NodeWhereUniqueInput;
+    data: Prisma.XOR<Prisma.NodeUpdateWithoutTemplateInput, Prisma.NodeUncheckedUpdateWithoutTemplateInput>;
+};
+export type NodeUpdateManyWithWhereWithoutTemplateInput = {
+    where: Prisma.NodeScalarWhereInput;
+    data: Prisma.XOR<Prisma.NodeUpdateManyMutationInput, Prisma.NodeUncheckedUpdateManyWithoutTemplateInput>;
+};
+export type NodeScalarWhereInput = {
+    AND?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
+    OR?: Prisma.NodeScalarWhereInput[];
+    NOT?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
+    id?: Prisma.StringFilter<"Node"> | string;
+    workflowId?: Prisma.StringFilter<"Node"> | string;
+    templateId?: Prisma.StringFilter<"Node"> | string;
+    templateVersion?: Prisma.StringFilter<"Node"> | string;
+    label?: Prisma.StringNullableFilter<"Node"> | string | null;
+    positionX?: Prisma.FloatFilter<"Node"> | number;
+    positionY?: Prisma.FloatFilter<"Node"> | number;
+    actionState?: Prisma.JsonFilter<"Node">;
+    createdAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
+};
+export type NodeCreateWithoutWorkflowInput = {
+    id: string;
+    label?: string | null;
+    positionX: number;
+    positionY: number;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    template: Prisma.NodeTemplateCreateNestedOneWithoutNodesInput;
     outgoingEdges?: Prisma.EdgeCreateNestedManyWithoutSourceNodeInput;
     incomingEdges?: Prisma.EdgeCreateNestedManyWithoutTargetNodeInput;
 };
 export type NodeUncheckedCreateWithoutWorkflowInput = {
-    id?: string;
-    type: $Enums.NodeType;
+    id: string;
+    templateId: string;
+    templateVersion?: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     outgoingEdges?: Prisma.EdgeUncheckedCreateNestedManyWithoutSourceNodeInput;
@@ -466,40 +582,27 @@ export type NodeUpdateManyWithWhereWithoutWorkflowInput = {
     where: Prisma.NodeScalarWhereInput;
     data: Prisma.XOR<Prisma.NodeUpdateManyMutationInput, Prisma.NodeUncheckedUpdateManyWithoutWorkflowInput>;
 };
-export type NodeScalarWhereInput = {
-    AND?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
-    OR?: Prisma.NodeScalarWhereInput[];
-    NOT?: Prisma.NodeScalarWhereInput | Prisma.NodeScalarWhereInput[];
-    id?: Prisma.StringFilter<"Node"> | string;
-    workflowId?: Prisma.StringFilter<"Node"> | string;
-    type?: Prisma.EnumNodeTypeFilter<"Node"> | $Enums.NodeType;
-    label?: Prisma.StringNullableFilter<"Node"> | string | null;
-    positionX?: Prisma.FloatFilter<"Node"> | number;
-    positionY?: Prisma.FloatFilter<"Node"> | number;
-    config?: Prisma.JsonFilter<"Node">;
-    createdAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
-    updatedAt?: Prisma.DateTimeFilter<"Node"> | Date | string;
-};
 export type NodeCreateWithoutOutgoingEdgesInput = {
-    id?: string;
-    type: $Enums.NodeType;
+    id: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     workflow: Prisma.WorkflowCreateNestedOneWithoutNodesInput;
+    template: Prisma.NodeTemplateCreateNestedOneWithoutNodesInput;
     incomingEdges?: Prisma.EdgeCreateNestedManyWithoutTargetNodeInput;
 };
 export type NodeUncheckedCreateWithoutOutgoingEdgesInput = {
-    id?: string;
+    id: string;
     workflowId: string;
-    type: $Enums.NodeType;
+    templateId: string;
+    templateVersion?: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     incomingEdges?: Prisma.EdgeUncheckedCreateNestedManyWithoutTargetNodeInput;
@@ -509,25 +612,26 @@ export type NodeCreateOrConnectWithoutOutgoingEdgesInput = {
     create: Prisma.XOR<Prisma.NodeCreateWithoutOutgoingEdgesInput, Prisma.NodeUncheckedCreateWithoutOutgoingEdgesInput>;
 };
 export type NodeCreateWithoutIncomingEdgesInput = {
-    id?: string;
-    type: $Enums.NodeType;
+    id: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     workflow: Prisma.WorkflowCreateNestedOneWithoutNodesInput;
+    template: Prisma.NodeTemplateCreateNestedOneWithoutNodesInput;
     outgoingEdges?: Prisma.EdgeCreateNestedManyWithoutSourceNodeInput;
 };
 export type NodeUncheckedCreateWithoutIncomingEdgesInput = {
-    id?: string;
+    id: string;
     workflowId: string;
-    type: $Enums.NodeType;
+    templateId: string;
+    templateVersion?: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     outgoingEdges?: Prisma.EdgeUncheckedCreateNestedManyWithoutSourceNodeInput;
@@ -547,24 +651,25 @@ export type NodeUpdateToOneWithWhereWithoutOutgoingEdgesInput = {
 };
 export type NodeUpdateWithoutOutgoingEdgesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     workflow?: Prisma.WorkflowUpdateOneRequiredWithoutNodesNestedInput;
+    template?: Prisma.NodeTemplateUpdateOneRequiredWithoutNodesNestedInput;
     incomingEdges?: Prisma.EdgeUpdateManyWithoutTargetNodeNestedInput;
 };
 export type NodeUncheckedUpdateWithoutOutgoingEdgesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
+    templateId?: Prisma.StringFieldUpdateOperationsInput | string;
+    templateVersion?: Prisma.StringFieldUpdateOperationsInput | string;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     incomingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutTargetNodeNestedInput;
@@ -580,57 +685,104 @@ export type NodeUpdateToOneWithWhereWithoutIncomingEdgesInput = {
 };
 export type NodeUpdateWithoutIncomingEdgesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     workflow?: Prisma.WorkflowUpdateOneRequiredWithoutNodesNestedInput;
+    template?: Prisma.NodeTemplateUpdateOneRequiredWithoutNodesNestedInput;
     outgoingEdges?: Prisma.EdgeUpdateManyWithoutSourceNodeNestedInput;
 };
 export type NodeUncheckedUpdateWithoutIncomingEdgesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
+    templateId?: Prisma.StringFieldUpdateOperationsInput | string;
+    templateVersion?: Prisma.StringFieldUpdateOperationsInput | string;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     outgoingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutSourceNodeNestedInput;
 };
-export type NodeCreateManyWorkflowInput = {
-    id?: string;
-    type: $Enums.NodeType;
+export type NodeCreateManyTemplateInput = {
+    id: string;
+    workflowId: string;
     label?: string | null;
     positionX: number;
     positionY: number;
-    config: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type NodeUpdateWithoutTemplateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
+    positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    workflow?: Prisma.WorkflowUpdateOneRequiredWithoutNodesNestedInput;
+    outgoingEdges?: Prisma.EdgeUpdateManyWithoutSourceNodeNestedInput;
+    incomingEdges?: Prisma.EdgeUpdateManyWithoutTargetNodeNestedInput;
+};
+export type NodeUncheckedUpdateWithoutTemplateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
+    positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    outgoingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutSourceNodeNestedInput;
+    incomingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutTargetNodeNestedInput;
+};
+export type NodeUncheckedUpdateManyWithoutTemplateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
+    positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type NodeCreateManyWorkflowInput = {
+    id: string;
+    templateId: string;
+    templateVersion?: string;
+    label?: string | null;
+    positionX: number;
+    positionY: number;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type NodeUpdateWithoutWorkflowInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    template?: Prisma.NodeTemplateUpdateOneRequiredWithoutNodesNestedInput;
     outgoingEdges?: Prisma.EdgeUpdateManyWithoutSourceNodeNestedInput;
     incomingEdges?: Prisma.EdgeUpdateManyWithoutTargetNodeNestedInput;
 };
 export type NodeUncheckedUpdateWithoutWorkflowInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
+    templateId?: Prisma.StringFieldUpdateOperationsInput | string;
+    templateVersion?: Prisma.StringFieldUpdateOperationsInput | string;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     outgoingEdges?: Prisma.EdgeUncheckedUpdateManyWithoutSourceNodeNestedInput;
@@ -638,11 +790,12 @@ export type NodeUncheckedUpdateWithoutWorkflowInput = {
 };
 export type NodeUncheckedUpdateManyWithoutWorkflowInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType;
+    templateId?: Prisma.StringFieldUpdateOperationsInput | string;
+    templateVersion?: Prisma.StringFieldUpdateOperationsInput | string;
     label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     positionX?: Prisma.FloatFieldUpdateOperationsInput | number;
     positionY?: Prisma.FloatFieldUpdateOperationsInput | number;
-    config?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    actionState?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -666,14 +819,16 @@ export type NodeCountOutputTypeCountIncomingEdgesArgs<ExtArgs extends runtime.Ty
 export type NodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     workflowId?: boolean;
-    type?: boolean;
+    templateId?: boolean;
+    templateVersion?: boolean;
     label?: boolean;
     positionX?: boolean;
     positionY?: boolean;
-    config?: boolean;
+    actionState?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
+    template?: boolean | Prisma.NodeTemplateDefaultArgs<ExtArgs>;
     outgoingEdges?: boolean | Prisma.Node$outgoingEdgesArgs<ExtArgs>;
     incomingEdges?: boolean | Prisma.Node$incomingEdgesArgs<ExtArgs>;
     _count?: boolean | Prisma.NodeCountOutputTypeDefaultArgs<ExtArgs>;
@@ -681,66 +836,76 @@ export type NodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type NodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     workflowId?: boolean;
-    type?: boolean;
+    templateId?: boolean;
+    templateVersion?: boolean;
     label?: boolean;
     positionX?: boolean;
     positionY?: boolean;
-    config?: boolean;
+    actionState?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
+    template?: boolean | Prisma.NodeTemplateDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["node"]>;
 export type NodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     workflowId?: boolean;
-    type?: boolean;
+    templateId?: boolean;
+    templateVersion?: boolean;
     label?: boolean;
     positionX?: boolean;
     positionY?: boolean;
-    config?: boolean;
+    actionState?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
+    template?: boolean | Prisma.NodeTemplateDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["node"]>;
 export type NodeSelectScalar = {
     id?: boolean;
     workflowId?: boolean;
-    type?: boolean;
+    templateId?: boolean;
+    templateVersion?: boolean;
     label?: boolean;
     positionX?: boolean;
     positionY?: boolean;
-    config?: boolean;
+    actionState?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type NodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "type" | "label" | "positionX" | "positionY" | "config" | "createdAt" | "updatedAt", ExtArgs["result"]["node"]>;
+export type NodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "templateId" | "templateVersion" | "label" | "positionX" | "positionY" | "actionState" | "createdAt" | "updatedAt", ExtArgs["result"]["node"]>;
 export type NodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
+    template?: boolean | Prisma.NodeTemplateDefaultArgs<ExtArgs>;
     outgoingEdges?: boolean | Prisma.Node$outgoingEdgesArgs<ExtArgs>;
     incomingEdges?: boolean | Prisma.Node$incomingEdgesArgs<ExtArgs>;
     _count?: boolean | Prisma.NodeCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type NodeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
+    template?: boolean | Prisma.NodeTemplateDefaultArgs<ExtArgs>;
 };
 export type NodeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
+    template?: boolean | Prisma.NodeTemplateDefaultArgs<ExtArgs>;
 };
 export type $NodePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "Node";
     objects: {
         workflow: Prisma.$WorkflowPayload<ExtArgs>;
+        template: Prisma.$NodeTemplatePayload<ExtArgs>;
         outgoingEdges: Prisma.$EdgePayload<ExtArgs>[];
         incomingEdges: Prisma.$EdgePayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
         workflowId: string;
-        type: $Enums.NodeType;
+        templateId: string;
+        templateVersion: string;
         label: string | null;
         positionX: number;
         positionY: number;
-        config: runtime.JsonValue;
+        actionState: runtime.JsonValue;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["node"]>;
@@ -796,6 +961,7 @@ export interface NodeDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
 export interface Prisma__NodeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
     workflow<T extends Prisma.WorkflowDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkflowClient<runtime.Types.Result.GetResult<Prisma.$WorkflowPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    template<T extends Prisma.NodeTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NodeTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__NodeTemplateClient<runtime.Types.Result.GetResult<Prisma.$NodeTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     outgoingEdges<T extends Prisma.Node$outgoingEdgesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Node$outgoingEdgesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EdgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     incomingEdges<T extends Prisma.Node$incomingEdgesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Node$incomingEdgesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EdgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
@@ -805,11 +971,12 @@ export interface Prisma__NodeClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface NodeFieldRefs {
     readonly id: Prisma.FieldRef<"Node", 'String'>;
     readonly workflowId: Prisma.FieldRef<"Node", 'String'>;
-    readonly type: Prisma.FieldRef<"Node", 'NodeType'>;
+    readonly templateId: Prisma.FieldRef<"Node", 'String'>;
+    readonly templateVersion: Prisma.FieldRef<"Node", 'String'>;
     readonly label: Prisma.FieldRef<"Node", 'String'>;
     readonly positionX: Prisma.FieldRef<"Node", 'Float'>;
     readonly positionY: Prisma.FieldRef<"Node", 'Float'>;
-    readonly config: Prisma.FieldRef<"Node", 'Json'>;
+    readonly actionState: Prisma.FieldRef<"Node", 'Json'>;
     readonly createdAt: Prisma.FieldRef<"Node", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Node", 'DateTime'>;
 }

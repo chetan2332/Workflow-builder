@@ -9,18 +9,31 @@
       "id": "out",
       "side": "right",
       "kind": "output",
-      "type": "flow",
+      "type": "json",
       "label": "out"
     }
   ],
   "action": {
     "title": "Configure Input",
-    "description": "Enter the input text.",
+    "description": "Enter the input value.",
     "fields": [
       {
+        "id": "valueKind",
+        "label": "Value type",
+        "type": "enum",
+        "options": [
+          { "value": "text", "label": "Text" },
+          { "value": "number", "label": "Number" },
+          { "value": "boolean", "label": "Boolean" },
+          { "value": "json", "label": "JSON" }
+        ],
+        "defaultValue": "text"
+      },
+      {
         "id": "text",
-        "label": "Text",
-        "type": "string"
+        "label": "Text value",
+        "type": "string",
+        "placeholder": "Enter text value"
       }
     ]
   }

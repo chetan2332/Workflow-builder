@@ -1,0 +1,65 @@
+{
+  "nodeId": "TRANSFORM",
+  "name": "Transform",
+  "nodeType": "OTHER",
+  "description": "Maps many inputs to many outputs (fan-in / fan-out).",
+  "shape": "roundedRectangle",
+  "dynamicHandles": {
+    "inputs": true,
+    "outputs": true
+  },
+  "handles": [
+    {
+      "id": "in-1",
+      "side": "left",
+      "kind": "input",
+      "type": "any",
+      "label": "in"
+    },
+    {
+      "id": "out-1",
+      "side": "right",
+      "kind": "output",
+      "type": "json",
+      "label": "out"
+    }
+  ],
+  "action": {
+    "title": "Configure Transform",
+    "description": "Set inputs, outputs, and transformation code.",
+    "tabs": ["handles", "logic"],
+    "fields": [
+      {
+        "id": "inputHandleCount",
+        "label": "Number of inputs",
+        "type": "handleCount",
+        "defaultValue": 1,
+        "min": 1,
+        "tab": "handles"
+      },
+      {
+        "id": "outputHandleCount",
+        "label": "Number of outputs",
+        "type": "handleCount",
+        "defaultValue": 1,
+        "min": 1,
+        "tab": "handles"
+      },
+      {
+        "id": "outputLabels",
+        "label": "Output labels",
+        "type": "handleLabels",
+        "placeholder": "output1, output2, output3",
+        "tab": "handles"
+      },
+      {
+        "id": "code",
+        "label": "Transform code",
+        "type": "code",
+        "language": "javascript",
+        "placeholder": "return [inputs[0], inputs[1]];",
+        "tab": "logic"
+      }
+    ]
+  }
+}

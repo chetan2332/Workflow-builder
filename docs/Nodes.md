@@ -56,9 +56,9 @@ Shapes control **render style** on the graph (size, icon placement, optional **i
 | `circle` | Circle | If, Switch, Input, Do Nothing |
 | `d` | D-shaped (one flat edge, “capsule” / opposite-D style) | **Start** (trigger) |
 | `roundedRectangle` | Standard rounded rect | Function, HTTP, File, Transform |
-| `llmCard` | **Larger** rounded rectangle than `roundedRectangle`, with **room for short text inside** (e.g. model name or “LLM”) | **LLM** node |
+| `rectangleWithText` | **Larger** rounded rectangle than `roundedRectangle`, with **room for short text inside** (e.g. model name or “LLM”) that can be configured per node | **LLM** node |
 
-Implementation note: `llmCard` is a **variant of rounded rect** with increased min size + typography for inline preview text (not a second title bar).
+Implementation note: `rectangleWithText` is a **variant of rounded rect** with increased min size + typography for inline preview text (not a second title bar). The displayed text is configured via the `inlineText` configuration field.
 
 ---
 
@@ -96,6 +96,7 @@ Use this **vocabulary** when describing `actionState` / persisted `config`. Each
 | `modelRef` | string (model id) | Model picker | LLM catalog |
 | `handleCount` | number | Number + preview | Renames dynamic handles (`inputHandleCount`, …) |
 | `handleLabels` | string \| string[] | Text or tag input | Comma-separated or repeated labels |
+| `inlineText` | string | Text input | Short text displayed inside `rectangleWithText` shaped nodes (e.g., model name, operation type) |
 | `triggerInvokeInfo` | derived / read-only | URL + method + copy button | Not stored as user text; computed from workflow + env |
 
 ### Typed objects (where the spec is still thin)
@@ -219,7 +220,7 @@ No cross-node validation yet.
 - description: Entry point for the workflow; start with JSON payload via **Run** in the app or via **HTTP API** (same node — two ways to invoke).
 - shape: `d`
 - paletteGroup: Trigger
-- definitionVersion: 2
+- definitionVersion: 1
 
 **Layer 2 — Graph**
 
@@ -677,7 +678,7 @@ No cross-node validation yet.
 - category: CODE
 - subtitle: Model + prompt
 - description: Calls a configured model with credentials; returns completion text / structured output.
-- shape: **`llmCard`** (larger rounded rect, **inline text**: model short name or “LLM”)
+- shape: **`rectangleWithText`** (larger rounded rect with configurable inline text)
 - paletteGroup: Action
 - definitionVersion: 1
 
@@ -694,12 +695,13 @@ No cross-node validation yet.
 |-----|-----------|----------|--------|
 | `modelId` | modelRef | required | |
 | `credentialRef` | credentialRef | required | |
+| `inlineText` | string | optional | Short text displayed inside node (default: derived from modelId or "LLM") |
 | `prompt` | text | required | unless messages-only mode later |
 | `systemPrompt` | text | optional | |
 | `temperature` | number | optional | min 0 max 2 |
 | `maxTokens` | number | optional | |
 
-**Canvas:** `llmCard` shows **truncated** `modelId` or resolved display name inside the node.
+**Canvas:** `rectangleWithText` displays the `inlineText` field value inside the node. If `inlineText` is not specified, it defaults to showing a **truncated** `modelId` or resolved display name.
 
 **Double-click UI**
 

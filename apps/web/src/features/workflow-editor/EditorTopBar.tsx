@@ -6,6 +6,7 @@ type EditorTopBarProps = {
   onSave?: () => void;
   isSaving?: boolean;
   isRunning?: boolean;
+  hasUnsavedChanges?: boolean;
 };
 
 export function EditorTopBar({
@@ -16,6 +17,7 @@ export function EditorTopBar({
   onSave,
   isSaving,
   isRunning,
+  hasUnsavedChanges,
 }: EditorTopBarProps) {
   const statusLabel = status.toLowerCase();
   const statusClasses =
@@ -24,6 +26,19 @@ export function EditorTopBar({
       : status === 'ARCHIVED'
       ? 'border-slate-500/50 text-slate-300'
       : 'border-amber-500/50 text-amber-300';
+
+  // Determine save status text and styling
+  const saveStatusText = isSaving
+    ? 'Saving...'
+    : hasUnsavedChanges
+    ? 'Unsaved changes'
+    : 'All changes saved';
+
+  const saveStatusClasses = isSaving
+    ? 'text-blue-400'
+    : hasUnsavedChanges
+    ? 'text-amber-400'
+    : 'text-emerald-400';
 
   return (
     <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
@@ -36,6 +51,9 @@ export function EditorTopBar({
         </p>
       </div>
       <div className="flex items-center gap-3">
+        <span className={`text-[11px] ${saveStatusClasses}`}>
+          {saveStatusText}
+        </span>
         <span
           className={`inline-flex items-center rounded-full border px-2 py-[2px] text-[10px] ${statusClasses}`}
         >

@@ -1,0 +1,1031 @@
+{
+  "nodeCategories": {
+    "TRIGGER": {
+      "description": "All TRIGGER nodes follow this pattern",
+
+      "ui": {
+        "layout": "three-column",
+        "leftPanel": {
+          "title": "Sample Payload",
+          "fields": [
+            {
+              "id": "samplePayload",
+              "type": "json",
+              "label": "Sample Payload",
+              "required": false,
+              "placeholder": "{}",
+              "description": "Test data for manual workflow runs"
+            }
+          ]
+        },
+        "centerPanel": {
+          "title": "Input Schema",
+          "description": "Define the structure of expected input data",
+          "component": "SchemaBuilder",
+          "schemaField": "inputSchema"
+        },
+        "rightPanel": {
+          "title": "Output",
+          "description": "Full right side for single output handle",
+          "showOutputHandle": true,
+          "handleConfig": {
+            "id": "out",
+            "label": "Output",
+            "hasType": true,
+            "defaultType": "any",
+            "typeEditable": true,
+            "note": "Every handle is associated with a type (default: 'any'). This type will be used for validation."
+          }
+        }
+      },
+
+      "execution": {
+        "logic": "Pass-through: Take input and pass to output as-is",
+        "steps": [
+          "1. Get samplePayload from config",
+          "2. Parse if string (JSON.parse)",
+          "3. Optional: Validate against inputSchema if enforceSchema is true",
+          "4. Output to 'out' handle without modification"
+        ],
+        "pseudocode": "output['out'] = [samplePayload]"
+      },
+
+      "notes": [
+        "All TRIGGER nodes use this same UI and execution pattern",
+        "Can be extended later if specific trigger nodes need different behavior"
+      ]
+    },
+
+    "CODE": {
+      "description": "All CODE nodes follow this pattern - HTTP, LLM, FUNCTION",
+
+      "handles": {
+        "structure": "Fixed - user has NO control",
+        "input": {
+          "count": 1,
+          "id": "in",
+          "label": "Input",
+          "schema": {
+            "defaultType": "any",
+            "editable": true,
+            "canInferSchema": true
+          }
+        },
+        "outputs": [
+          {
+            "id": "success",
+            "label": "Success",
+            "schema": {
+              "defaultType": "any",
+              "editable": true,
+              "canInferSchema": true
+            }
+          },
+          {
+            "id": "error",
+            "label": "Error",
+            "schema": {
+              "fixed": true,
+              "editable": false,
+              "structure": {
+                "type": "object",
+                "properties": [
+                  { "name": "error", "schema": { "type": "boolean", "required": true } },
+                  { "name": "message", "schema": { "type": "string", "required": true } },
+                  { "name": "code", "schema": { "type": "string", "required": false } },
+                  { "name": "stack", "schema": { "type": "string", "required": false } }
+                ]
+              }
+            }
+          }
+        ],
+        "note": "2 output handles but only 1 shown at a time in UI (toggle between success/error view)"
+      },
+
+      "ui": {
+        "layout": "three-column",
+        "leftPanel": {
+          "title": "Input",
+          "content": "Shows input handle only",
+          "components": [
+            "InputHandle display",
+            "Infer Schema button (at bottom)"
+          ]
+        },
+        "centerPanel": {
+          "title": "Configuration",
+          "content": "Tabbed interface with node-specific tabs",
+          "tabs": [
+            "Node-specific tabs (varies by node)",
+            {
+              "id": "schema",
+              "label": "Schema",
+              "position": "always last",
+              "required": true,
+              "description": "This tab is mandatory for all CODE nodes"
+            }
+          ]
+        },
+        "rightPanel": {
+          "title": "Output",
+          "content": "Shows ONE output handle at a time",
+          "components": [
+            "Toggle/Select: Success or Error view",
+            "OutputHandle display (based on selection)",
+            "Infer Schema button (at bottom) - only for success handle"
+          ],
+          "note": "Error handle schema is fixed, success handle schema is editable"
+        }
+      },
+
+      "execution": {
+        "generalizedFlow": "Input validation → Execute some code → Output validation → Route to handle",
+        "steps": [
+          "1. Get input data from 'in' handle",
+          "2. VALIDATE: Input data against input handle schema (if schema defined)",
+          "3. EXECUTE: Run some code (node-specific implementation)",
+          "4. VALIDATE: Output data against success handle schema (if schema defined)",
+          "5. ROUTE: If all steps succeed → 'success' handle, else → 'error' handle"
+        ],
+        "errorHandling": {
+          "inputValidationFails": "→ error handle with validation error details",
+          "codeExecutionFails": "→ error handle with execution error details",
+          "outputValidationFails": "→ error handle with validation error details"
+        },
+        "pseudocode": [
+          "async function executeCodeNode(input, config, schemas) {",
+          "  try {",
+          "    // Step 1: Validate input",
+          "    if (schemas.input) {",
+          "      const validation = validateData(input, schemas.input);",
+          "      if (!validation.valid) throw new ValidationError(validation.errors);",
+          "    }",
+          "",
+          "    // Step 2: Execute some code (node-specific)",
+          "    const result = await executeSomeCode(config, input);",
+          "",
+          "    // Step 3: Validate output",
+          "    if (schemas.success) {",
+          "      const validation = validateData(result, schemas.success);",
+          "      if (!validation.valid) throw new ValidationError(validation.errors);",
+          "    }",
+          "",
+          "    // Step 4: Route to success",
+          "    return { success: [result], error: [] };",
+          "",
+          "  } catch (error) {",
+          "    // Route to error handle with fixed error schema",
+          "    return {",
+          "      success: [],",
+          "      error: [{",
+          "        error: true,",
+          "        message: error.message,",
+          "        code: error.code || 'EXECUTION_ERROR',",
+          "        stack: error.stack",
+          "      }]",
+          "    };",
+          "  }",
+          "}"
+        ]
+      },
+
+      "notes": [
+        "All CODE nodes (HTTP, LLM, FUNCTION) follow this generalized pattern",
+        "Only difference is what 'some code' does - defined in each node's specificBehavior",
+        "Execution always: validate input → execute → validate output → route"
+      ]
+    },
+
+    "FLOW": {
+      "description": "All FLOW nodes follow this pattern - COMBINE, CONDITION, IF, SWITCH",
+
+      "purpose": "Data routing and flow control - no external execution, just routing logic",
+
+      "characteristics": [
+        "No API calls or external code execution",
+        "All about routing data from input(s) to output(s)",
+        "Logic-based decisions (conditions, value matching, merge strategies)",
+        "Type preservation (output types derive from input types)",
+        "Synchronous execution (no async operations)"
+      ],
+
+      "ui": {
+        "layout": "three-column",
+        "leftPanel": {
+          "title": "Inputs",
+          "content": "Shows input handle(s)",
+          "capabilities": [
+            "Display input handles",
+            "Dynamic add/remove inputs (for COMBINE node)",
+            "Infer Schema button (at bottom)"
+          ]
+        },
+        "centerPanel": {
+          "title": "Logic Configuration",
+          "content": "Node-specific routing/condition logic",
+          "note": "Varies by node - see each node's specificBehavior"
+        },
+        "rightPanel": {
+          "title": "Outputs",
+          "content": "Shows output handle(s)",
+          "capabilities": [
+            "Display output handles",
+            "Dynamic add/remove outputs (for CONDITION, SWITCH nodes)",
+            "Toggle/Selector for viewing specific output",
+            "Infer Schema button (at bottom)"
+          ]
+        }
+      },
+
+      "execution": {
+        "generalizedFlow": "Get input data → Apply routing logic → Route to outputs",
+        "steps": [
+          "1. Get input data (from single or multiple input handles)",
+          "2. Apply node-specific routing logic",
+          "3. Route data to appropriate output handle(s)",
+          "4. No validation - data passes through as-is"
+        ],
+        "pseudocode": [
+          "async function executeFlowNode(inputs, config) {",
+          "  // Step 1: Get input data",
+          "  const inputData = getInputData(inputs);",
+          "",
+          "  // Step 2: Apply node-specific routing logic",
+          "  const routingDecisions = applyRoutingLogic(inputData, config);",
+          "",
+          "  // Step 3: Route to outputs",
+          "  const outputs = {};",
+          "  for (const [handleId, data] of routingDecisions) {",
+          "    outputs[handleId] = data;",
+          "  }",
+          "",
+          "  return outputs;",
+          "}"
+        ],
+        "typeHandling": "Output types are derived from input types (no transformation)"
+      },
+
+      "notes": [
+        "All FLOW nodes (COMBINE, CONDITION, IF, SWITCH) follow this generalized pattern",
+        "No external execution - purely data routing",
+        "Synchronous and fast execution"
+      ]
+    }
+  },
+
+  "nodes": {
+    "START": {
+      "category": "TRIGGER",
+      "inherits": "Uses TRIGGER category UI and execution pattern",
+      "specificBehavior": "None - uses default TRIGGER behavior"
+    },
+
+    "HTTP": {
+      "category": "CODE",
+      "inherits": "Uses CODE category handles, UI layout, and execution flow",
+      "specificBehavior": {
+        "centerTabs": [
+          {
+            "id": "request",
+            "label": "Request",
+            "fields": [
+              {
+                "id": "method",
+                "type": "select",
+                "label": "Method",
+                "options": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+                "default": "GET",
+                "required": true
+              },
+              {
+                "id": "url",
+                "type": "string",
+                "label": "URL",
+                "required": true,
+                "placeholder": "https://api.example.com/endpoint",
+                "supportsInputInterpolation": true,
+                "note": "Can use input values like: https://api.example.com/users/{{input.userId}}"
+              },
+              {
+                "id": "headers",
+                "type": "keyValue",
+                "label": "Headers",
+                "required": false,
+                "supportsInputInterpolation": true,
+                "note": "Can use input values in header values"
+              },
+              {
+                "id": "body",
+                "type": "json",
+                "label": "Body",
+                "required": false,
+                "showWhen": "method !== 'GET'",
+                "supportsInputInterpolation": true,
+                "note": "Can use input values in body fields"
+              },
+              {
+                "id": "outputParser",
+                "type": "string",
+                "label": "Output Parser",
+                "required": false,
+                "placeholder": "res.d.result[0]",
+                "description": "JavaScript expression to extract data from response (e.g., res.data.items[0])"
+              }
+            ]
+          },
+          {
+            "id": "auth",
+            "label": "Authentication",
+            "fields": [
+              {
+                "id": "authType",
+                "type": "select",
+                "label": "Auth Type",
+                "options": ["none", "basic", "bearer", "apikey"],
+                "default": "none"
+              },
+              {
+                "id": "credentialRef",
+                "type": "credentialRef",
+                "label": "Credential",
+                "showWhen": "authType !== 'none'"
+              }
+            ]
+          },
+          {
+            "id": "schema",
+            "label": "Schema",
+            "note": "Mandatory schema tab - last position"
+          }
+        ],
+        "codeExecution": "Make HTTP request with interpolated values, apply output parser if provided"
+      }
+    },
+
+    "LLM": {
+      "category": "CODE",
+      "inherits": "Uses CODE category handles, UI layout, and execution flow",
+      "specificBehavior": {
+        "centerTabs": [
+          {
+            "id": "model",
+            "label": "Model",
+            "fields": [
+              {
+                "id": "provider",
+                "type": "select",
+                "label": "Provider",
+                "options": ["openai", "anthropic", "custom"],
+                "default": "openai"
+              },
+              {
+                "id": "modelId",
+                "type": "select",
+                "label": "Model",
+                "options": "Dynamic based on provider",
+                "required": true
+              },
+              {
+                "id": "credentialRef",
+                "type": "credentialRef",
+                "label": "API Credential",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "prompt",
+            "label": "Prompt",
+            "fields": [
+              {
+                "id": "systemPrompt",
+                "type": "textarea",
+                "label": "System Prompt",
+                "required": false,
+                "placeholder": "You are a helpful assistant...",
+                "supportsInputInterpolation": true
+              },
+              {
+                "id": "userPrompt",
+                "type": "textarea",
+                "label": "User Prompt",
+                "required": true,
+                "placeholder": "Summarize: {{input.text}}",
+                "supportsInputInterpolation": true
+              }
+            ]
+          },
+          {
+            "id": "rag",
+            "label": "RAG",
+            "note": "RAG (Retrieval-Augmented Generation) support - TBD",
+            "fields": [
+              {
+                "id": "enableRAG",
+                "type": "boolean",
+                "label": "Enable RAG",
+                "default": false,
+                "note": "TODO: Define RAG configuration structure"
+              },
+              {
+                "id": "fileUpload",
+                "type": "file",
+                "label": "Upload Files",
+                "required": false,
+                "multiple": true,
+                "note": "Allow uploading files for context - structure TBD"
+              }
+            ]
+          },
+          {
+            "id": "parameters",
+            "label": "Parameters",
+            "fields": [
+              {
+                "id": "temperature",
+                "type": "number",
+                "label": "Temperature",
+                "default": 0.7,
+                "min": 0,
+                "max": 2,
+                "step": 0.1
+              },
+              {
+                "id": "maxTokens",
+                "type": "number",
+                "label": "Max Tokens",
+                "default": 1000,
+                "min": 1
+              }
+            ]
+          },
+          {
+            "id": "schema",
+            "label": "Schema",
+            "note": "Mandatory schema tab"
+          }
+        ],
+        "codeExecution": "Call LLM API with prompt, RAG context if enabled, and uploaded files",
+        "notes": [
+          "Full structure TBD - will be decided later",
+          "Must support: prompts, RAG, file uploads",
+          "RAG and file upload details to be finalized"
+        ]
+      }
+    },
+
+    "FUNCTION": {
+      "category": "CODE",
+      "inherits": "Uses CODE category handles, UI layout, and execution flow",
+      "specificBehavior": {
+        "centerTabs": [
+          {
+            "id": "code",
+            "label": "Code",
+            "fields": [
+              {
+                "id": "language",
+                "type": "select",
+                "label": "Language",
+                "options": ["javascript", "python"],
+                "default": "javascript"
+              },
+              {
+                "id": "code",
+                "type": "code",
+                "label": "Function Code",
+                "language": "Matches language field",
+                "required": true,
+                "prewrittenCode": "function(input) {\n  // Your code here\n}",
+                "editableSection": "function body only",
+                "unchangeableSection": "function(input) {} wrapper is fixed",
+                "placeholder": "// Access input data like:\n// input.user\n// input.email\n// input.data\n\nreturn { result: input.value * 2 };",
+                "note": "Only function body is editable. Wrapper 'function(input) {}' is prewritten and unchangeable."
+              }
+            ]
+          },
+          {
+            "id": "schema",
+            "label": "Schema",
+            "note": "Mandatory schema tab"
+          }
+        ],
+        "codeExecution": "Execute user-written function body with input parameter in sandbox",
+        "inputAccess": "User can access input properties like: input.user, input.email, input.data, etc."
+      }
+    },
+
+    "COMBINE": {
+      "category": "FLOW",
+      "inherits": "Uses FLOW category UI layout and execution pattern",
+      "purpose": "Merge multiple inputs into single output",
+
+      "handles": {
+        "inputs": {
+          "count": "Multiple, dynamic",
+          "userControl": "User can add/remove input handles",
+          "defaultIds": ["in1", "in2"],
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true
+          }
+        },
+        "outputs": {
+          "count": 1,
+          "fixed": true,
+          "id": "out",
+          "label": "Output",
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true,
+            "derivedFrom": "Combined from all input types"
+          }
+        }
+      },
+
+      "ui": {
+        "leftPanel": {
+          "content": "List of input handles (dynamic)",
+          "components": [
+            "For each input handle:",
+            "  - Handle display with label",
+            "  - Schema indicator",
+            "+ Add Input button",
+            "- Remove Input button (for each handle)",
+            "Infer Schema button (at bottom)"
+          ]
+        },
+        "centerPanel": {
+          "tabs": [
+            {
+              "id": "combine",
+              "label": "Combine Logic",
+              "fields": [
+                {
+                  "id": "strategy",
+                  "type": "select",
+                  "label": "Combine Strategy",
+                  "options": ["mergeObjects", "concatArrays", "custom"],
+                  "default": "mergeObjects",
+                  "required": true,
+                  "descriptions": {
+                    "mergeObjects": "Merge all inputs as objects: { ...in1, ...in2, ...in3 }",
+                    "concatArrays": "Concatenate all inputs as arrays: [...in1, ...in2, ...in3]",
+                    "custom": "Write custom code to combine inputs"
+                  }
+                },
+                {
+                  "id": "customCode",
+                  "type": "code",
+                  "label": "Custom Combine Code",
+                  "language": "javascript",
+                  "required": false,
+                  "showWhen": "strategy === 'custom'",
+                  "placeholder": "// Access inputs as: inputs.in1, inputs.in2, etc.\nreturn { combined: { ...inputs.in1, ...inputs.in2 } };",
+                  "note": "inputs object contains all input handle data"
+                },
+                {
+                  "id": "waitForAll",
+                  "type": "boolean",
+                  "label": "Wait for All Inputs",
+                  "default": true,
+                  "description": "If true, waits for all inputs to have data. If false, combines available inputs only."
+                }
+              ]
+            }
+          ]
+        },
+        "rightPanel": {
+          "content": "Single output handle",
+          "components": [
+            "Output handle display",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        }
+      },
+
+      "execution": {
+        "logic": "Collect data from all input handles, apply combine strategy, output result",
+        "steps": [
+          "1. Get data from all input handles",
+          "2. If waitForAll=true: check all inputs have data, else skip empty inputs",
+          "3. Apply combine strategy:",
+          "   - mergeObjects: spread merge { ...in1, ...in2, ... }",
+          "   - concatArrays: array concat [...in1, ...in2, ...]",
+          "   - custom: execute user's custom code",
+          "4. Output combined result to 'out' handle"
+        ],
+        "typeHandling": {
+          "mergeObjects": "All inputs must be objects, output is object",
+          "concatArrays": "All inputs must be arrays, output is array",
+          "custom": "User controls type logic"
+        },
+        "pseudocode": [
+          "async function executeCombine(inputs, config) {",
+          "  // Step 1: Collect input data",
+          "  const inputData = {};",
+          "  for (const handleId in inputs) {",
+          "    inputData[handleId] = inputs[handleId];",
+          "  }",
+          "",
+          "  // Step 2: Check if all inputs present (if required)",
+          "  if (config.waitForAll) {",
+          "    const expectedHandles = config.inputHandles; // ['in1', 'in2', ...]",
+          "    for (const handle of expectedHandles) {",
+          "      if (!inputData[handle] || inputData[handle].length === 0) {",
+          "        throw new Error(`Missing data for input: ${handle}`);",
+          "      }",
+          "    }",
+          "  }",
+          "",
+          "  // Step 3: Apply combine strategy",
+          "  let result;",
+          "  switch (config.strategy) {",
+          "    case 'mergeObjects':",
+          "      result = Object.assign({}, ...Object.values(inputData));",
+          "      break;",
+          "    case 'concatArrays':",
+          "      result = [].concat(...Object.values(inputData));",
+          "      break;",
+          "    case 'custom':",
+          "      result = executeCustomCode(config.customCode, inputData);",
+          "      break;",
+          "  }",
+          "",
+          "  // Step 4: Output",
+          "  return { out: [result] };",
+          "}"
+        ]
+      }
+    },
+
+    "CONDITION": {
+      "category": "FLOW",
+      "inherits": "Uses FLOW category UI layout and execution pattern",
+      "purpose": "Route input to multiple outputs based on conditions",
+
+      "handles": {
+        "inputs": {
+          "count": 1,
+          "fixed": true,
+          "id": "in",
+          "label": "Input",
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true
+          }
+        },
+        "outputs": {
+          "count": "Multiple, dynamic",
+          "userControl": "User can add/remove output handles",
+          "defaultOutputs": [
+            { "id": "out1", "label": "Output 1", "condition": "input.value > 0" },
+            { "id": "out2", "label": "Output 2", "condition": "input.value <= 0" }
+          ],
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true,
+            "derivedFrom": "Same as input type"
+          }
+        }
+      },
+
+      "ui": {
+        "leftPanel": {
+          "content": "Single input handle",
+          "components": [
+            "Input handle display",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        },
+        "centerPanel": {
+          "tabs": [
+            {
+              "id": "conditions",
+              "label": "Conditions",
+              "content": "List of outputs with their conditions",
+              "structure": [
+                "For each output:",
+                {
+                  "outputLabel": {
+                    "type": "string",
+                    "label": "Output Label",
+                    "placeholder": "Output 1"
+                  },
+                  "condition": {
+                    "type": "code",
+                    "language": "javascript",
+                    "label": "Condition",
+                    "placeholder": "input.age > 18",
+                    "note": "Return true to route to this output. Input available as 'input' variable."
+                  }
+                },
+                "+ Add Output button",
+                "- Remove Output button (for each)"
+              ],
+              "note": "Input can match multiple conditions and go to multiple outputs"
+            }
+          ]
+        },
+        "rightPanel": {
+          "content": "Output handles selector",
+          "components": [
+            "Output selector dropdown (choose which output to view)",
+            "Selected output handle display",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        }
+      },
+
+      "execution": {
+        "logic": "Evaluate all conditions, route input to all matching outputs",
+        "steps": [
+          "1. Get input data",
+          "2. For each output:",
+          "   - Evaluate its condition with input data",
+          "   - If condition returns true, add input to that output's results",
+          "3. Route data to all matching outputs",
+          "4. Note: Input can go to multiple outputs (non-exclusive)"
+        ],
+        "conditionEvaluation": "Each condition is JavaScript expression/code that receives 'input' and returns boolean",
+        "pseudocode": [
+          "async function executeCondition(inputs, config) {",
+          "  // Step 1: Get input data",
+          "  const inputData = inputs.in[0]; // Single input, first item",
+          "",
+          "  // Step 2: Evaluate conditions",
+          "  const outputs = {};",
+          "  for (const output of config.outputs) {",
+          "    const conditionResult = evaluateCondition(output.condition, inputData);",
+          "    ",
+          "    if (conditionResult === true) {",
+          "      outputs[output.id] = [inputData]; // Route to this output",
+          "    }",
+          "  }",
+          "",
+          "  // Step 3: Return routed outputs",
+          "  return outputs;",
+          "}"
+        ],
+        "typeHandling": "All output types are same as input type"
+      }
+    },
+
+    "IF": {
+      "category": "FLOW",
+      "inherits": "Uses FLOW category UI layout and execution pattern",
+      "purpose": "Binary routing based on single condition",
+      "note": "Special case of CONDITION node with exactly 2 outputs and opposite conditions",
+
+      "handles": {
+        "inputs": {
+          "count": 1,
+          "fixed": true,
+          "id": "in",
+          "label": "Input",
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true
+          }
+        },
+        "outputs": {
+          "count": 2,
+          "fixed": true,
+          "outputs": [
+            { "id": "true", "label": "True" },
+            { "id": "false", "label": "False" }
+          ],
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true,
+            "derivedFrom": "Same as input type"
+          }
+        }
+      },
+
+      "ui": {
+        "leftPanel": {
+          "content": "Single input handle",
+          "components": [
+            "Input handle display",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        },
+        "centerPanel": {
+          "tabs": [
+            {
+              "id": "condition",
+              "label": "Condition",
+              "fields": [
+                {
+                  "id": "condition",
+                  "type": "code",
+                  "language": "javascript",
+                  "label": "IF Condition",
+                  "required": true,
+                  "placeholder": "input.age >= 18",
+                  "note": "Return true/false. Input available as 'input' variable."
+                }
+              ]
+            }
+          ]
+        },
+        "rightPanel": {
+          "content": "Toggle between true/false output",
+          "components": [
+            "Toggle: True | False",
+            "Show selected output handle",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        }
+      },
+
+      "execution": {
+        "logic": "Evaluate single condition, route to true OR false output",
+        "steps": [
+          "1. Get input data",
+          "2. Evaluate condition",
+          "3. If condition is true → route to 'true' output",
+          "4. If condition is false → route to 'false' output",
+          "5. Always routes to exactly ONE output"
+        ],
+        "conditionEvaluation": "Single JavaScript expression/code that receives 'input' and returns boolean",
+        "pseudocode": [
+          "async function executeIf(inputs, config) {",
+          "  // Step 1: Get input data",
+          "  const inputData = inputs.in[0]; // Single input, first item",
+          "",
+          "  // Step 2: Evaluate condition",
+          "  const conditionResult = evaluateCondition(config.condition, inputData);",
+          "",
+          "  // Step 3: Route to appropriate output",
+          "  if (conditionResult === true) {",
+          "    return { true: [inputData], false: [] };",
+          "  } else {",
+          "    return { true: [], false: [inputData] };",
+          "  }",
+          "}"
+        ],
+        "typeHandling": "Both outputs have same type as input"
+      }
+    },
+
+    "SWITCH": {
+      "category": "FLOW",
+      "inherits": "Uses FLOW category UI layout and execution pattern",
+      "purpose": "Multi-way routing based on value matching (like switch-case)",
+
+      "handles": {
+        "inputs": {
+          "count": 1,
+          "fixed": true,
+          "id": "in",
+          "label": "Input",
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true
+          }
+        },
+        "outputs": {
+          "count": "Multiple, dynamic",
+          "userControl": "User can add/remove case outputs",
+          "defaultOutputs": [
+            { "id": "case1", "label": "Case 1", "value": "pending" },
+            { "id": "case2", "label": "Case 2", "value": "approved" },
+            { "id": "default", "label": "Default", "isDefault": true }
+          ],
+          "schema": {
+            "editable": true,
+            "defaultType": "any",
+            "canInferSchema": true,
+            "derivedFrom": "Same as input type"
+          }
+        }
+      },
+
+      "ui": {
+        "leftPanel": {
+          "content": "Single input handle",
+          "components": [
+            "Input handle display",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        },
+        "centerPanel": {
+          "tabs": [
+            {
+              "id": "switch",
+              "label": "Switch Logic",
+              "fields": [
+                {
+                  "id": "switchExpression",
+                  "type": "string",
+                  "label": "Switch Expression",
+                  "required": true,
+                  "placeholder": "input.status",
+                  "note": "JavaScript expression to evaluate (e.g., input.status, input.type, input.code)"
+                }
+              ],
+              "cases": [
+                "For each case:",
+                {
+                  "caseValue": {
+                    "type": "string",
+                    "label": "Case Value",
+                    "placeholder": "pending",
+                    "note": "Value to match against switch expression result"
+                  },
+                  "outputLabel": {
+                    "type": "string",
+                    "label": "Output Label",
+                    "placeholder": "Pending"
+                  }
+                },
+                "+ Add Case button",
+                "- Remove Case button (for each)"
+              ],
+              "defaultCase": [
+                {
+                  "id": "enableDefault",
+                  "type": "boolean",
+                  "label": "Enable Default Case",
+                  "default": true,
+                  "note": "If enabled, unmatched inputs go to default output. If disabled, unmatched inputs produce no output."
+                }
+              ]
+            }
+          ]
+        },
+        "rightPanel": {
+          "content": "Output handles selector",
+          "components": [
+            "Output selector dropdown (choose which output to view)",
+            "Selected output handle display",
+            "Schema indicator",
+            "Infer Schema button (at bottom)"
+          ]
+        }
+      },
+
+      "execution": {
+        "logic": "Evaluate switch expression, match value to cases, route to matching output",
+        "steps": [
+          "1. Get input data",
+          "2. Evaluate switch expression (e.g., input.status → 'pending')",
+          "3. Find case that matches the expression result",
+          "4. Route to matching case output",
+          "5. If no match:",
+          "   - If default case enabled → route to default output",
+          "   - If default case disabled → no output (or error)",
+          "6. Always routes to exactly ONE output"
+        ],
+        "switchEvaluation": "Switch expression is JavaScript code that returns a value to match against case values",
+        "pseudocode": [
+          "async function executeSwitch(inputs, config) {",
+          "  // Step 1: Get input data",
+          "  const inputData = inputs.in[0]; // Single input, first item",
+          "",
+          "  // Step 2: Evaluate switch expression",
+          "  const switchValue = evaluateExpression(config.switchExpression, inputData);",
+          "",
+          "  // Step 3: Find matching case",
+          "  let matchedOutput = null;",
+          "  for (const caseConfig of config.cases) {",
+          "    if (caseConfig.value === switchValue) {",
+          "      matchedOutput = caseConfig.outputId;",
+          "      break;",
+          "    }",
+          "  }",
+          "",
+          "  // Step 4: Handle default case",
+          "  if (!matchedOutput && config.enableDefault) {",
+          "    matchedOutput = 'default';",
+          "  }",
+          "",
+          "  // Step 5: Route to output",
+          "  const outputs = {};",
+          "  if (matchedOutput) {",
+          "    outputs[matchedOutput] = [inputData];",
+          "  }",
+          "",
+          "  return outputs;",
+          "}"
+        ],
+        "typeHandling": "All outputs have same type as input"
+      }
+    }
+  }
+}

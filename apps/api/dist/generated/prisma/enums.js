@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeType = exports.WorkflowStatus = void 0;
+exports.NodeShape = exports.NodeType = exports.WorkflowStatus = void 0;
 exports.WorkflowStatus = {
     DRAFT: 'DRAFT',
     ACTIVE: 'ACTIVE',
@@ -9,6 +9,13 @@ exports.WorkflowStatus = {
 exports.NodeType = {
     TRIGGER: 'TRIGGER',
     CODE: 'CODE',
-    CONDITION: 'CONDITION'
+    CONDITION: 'CONDITION',
+    OTHER: 'OTHER'
+};
+exports.NodeShape = {
+    CIRCLE: 'CIRCLE',
+    OPPOSITE_D: 'OPPOSITE_D',
+    ROUNDED_RECTANGLE: 'ROUNDED_RECTANGLE',
+    RECTANGLE_WITH_TEXT: 'RECTANGLE_WITH_TEXT'
 };
 //# sourceMappingURL=enums.js.map

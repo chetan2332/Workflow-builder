@@ -16,23 +16,27 @@ exports.WorkflowsController = void 0;
 const common_1 = require("@nestjs/common");
 const workflows_service_1 = require("./workflows.service");
 const create_workflow_dto_1 = require("./dto/create-workflow.dto");
-const update_workflow_dto_1 = require("./dto/update-workflow.dto");
+const save_workflow_dto_1 = require("./dto/save-workflow.dto");
 let WorkflowsController = class WorkflowsController {
     workflowsService;
     constructor(workflowsService) {
         this.workflowsService = workflowsService;
     }
-    findAll() {
-        return this.workflowsService.findAll();
+    findAll(page, limit, status) {
+        return this.workflowsService.findAll({
+            page: page ? parseInt(page) : undefined,
+            limit: limit ? parseInt(limit) : undefined,
+            status,
+        });
     }
     findOne(id) {
         return this.workflowsService.findOne(id);
     }
-    create(dto) {
-        return this.workflowsService.create(dto);
+    create(createWorkflowDto) {
+        return this.workflowsService.create(createWorkflowDto);
     }
-    update(id, dto) {
-        return this.workflowsService.update(dto);
+    update(id, updateWorkflowDto) {
+        return this.workflowsService.update(id, updateWorkflowDto);
     }
     delete(id) {
         return this.workflowsService.delete(id);
@@ -41,8 +45,11 @@ let WorkflowsController = class WorkflowsController {
 exports.WorkflowsController = WorkflowsController;
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('status')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], WorkflowsController.prototype, "findAll", null);
 __decorate([
@@ -64,7 +71,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_workflow_dto_1.UpdateWorkflowDto]),
+    __metadata("design:paramtypes", [String, save_workflow_dto_1.UpdateWorkflowDto]),
     __metadata("design:returntype", void 0)
 ], WorkflowsController.prototype, "update", null);
 __decorate([

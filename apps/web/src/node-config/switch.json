@@ -4,12 +4,16 @@
   "nodeType": "CONDITION",
   "description": "Branch based on multiple cases.",
   "shape": "circle",
+  "dynamicHandles": {
+    "inputs": true,
+    "outputs": true
+  },
   "handles": [
     {
       "id": "in-1",
       "side": "left",
       "kind": "input",
-      "type": "flow",
+      "type": "any",
       "label": "in"
     },
     {
@@ -23,28 +27,52 @@
   "action": {
     "title": "Configure Switch",
     "description": "Set number of inputs, outputs and switch code.",
+    "tabs": ["handles", "logic"],
     "fields": [
       {
         "id": "inputHandleCount",
-        "label": "Number of input handles",
-        "type": "number",
-        "defaultValue": 1
+        "label": "Number of inputs",
+        "type": "handleCount",
+        "defaultValue": 1,
+        "min": 1,
+        "tab": "handles"
       },
       {
         "id": "outputHandleCount",
-        "label": "Number of output handles",
-        "type": "number",
-        "defaultValue": 1
+        "label": "Number of outputs",
+        "type": "handleCount",
+        "defaultValue": 2,
+        "min": 1,
+        "tab": "handles"
       },
       {
         "id": "outputLabels",
-        "label": "Output labels (comma separated)",
-        "type": "string"
+        "label": "Output labels",
+        "type": "handleLabels",
+        "placeholder": "case 1, case 2, case 3",
+        "tab": "handles"
+      },
+      {
+        "id": "inputHandleType",
+        "label": "Input handle type",
+        "type": "handleTypes",
+        "defaultValue": "json",
+        "tab": "handles"
+      },
+      {
+        "id": "outputHandleType",
+        "label": "Output handle type",
+        "type": "handleTypes",
+        "defaultValue": "flow",
+        "tab": "handles"
       },
       {
         "id": "code",
-        "label": "Switch code",
-        "type": "textarea"
+        "label": "Switch expression",
+        "type": "code",
+        "language": "javascript",
+        "placeholder": "return 0; // return case index",
+        "tab": "logic"
       }
     ]
   }

@@ -1,15 +1,23 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { WorkflowsService } from './workflows.service';
 import { CreateWorkflowDto } from './dto/create-workflow.dto';
-import { UpdateWorkflowDto } from './dto/update-workflow.dto';
+import { UpdateWorkflowDto } from './dto/save-workflow.dto';
 
 @Controller('workflows')
 export class WorkflowsController {
     constructor(private readonly workflowsService: WorkflowsService) {}
 
     @Get()
-    findAll() {
-        return this.workflowsService.findAll();
+    findAll(
+        @Query('page') page?: string,
+        @Query('limit') limit?: string,
+        @Query('status') status?: string,
+    ) {
+        return this.workflowsService.findAll({
+            page: page ? parseInt(page) : undefined,
+            limit: limit ? parseInt(limit) : undefined,
+            status,
+        });
     }
 
     @Get(':id')
@@ -18,13 +26,13 @@ export class WorkflowsController {
     }
 
     @Post()
-    create(@Body() dto: CreateWorkflowDto) {
-        return this.workflowsService.create(dto);
+    create(@Body() createWorkflowDto: CreateWorkflowDto) {
+        return this.workflowsService.create(createWorkflowDto);
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() dto: UpdateWorkflowDto) {
-        return this.workflowsService.update(dto);
+    update(@Param('id') id: string, @Body() updateWorkflowDto: UpdateWorkflowDto) {
+        return this.workflowsService.update(id, updateWorkflowDto);
     }
 
     @Delete(':id')

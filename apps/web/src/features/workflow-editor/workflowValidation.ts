@@ -122,7 +122,15 @@ export function isValidConnection(
   if (sourceHandle.kind !== 'output' || targetHandle.kind !== 'input')
     return false;
 
-  if (sourceHandle.type !== targetHandle.type) return false;
+  // Type compatibility check:
+  // - json → json: allowed
+  // - flow → flow: allowed
+  // - json → flow: allowed (json data can trigger execution)
+  // - flow → json: NOT allowed (flow has no data)
+  if (sourceHandle.type === 'flow' && targetHandle.type === 'json') {
+    return false; // Can't provide data from flow-only connection
+  }
+  // All other combinations are allowed
 
   const targetInputAlreadyConnected = edges.some(
     (e) => e.target === connection.target && e.targetHandle === connection.targetHandle,

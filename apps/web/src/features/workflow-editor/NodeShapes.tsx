@@ -26,7 +26,7 @@ function BaseNode({
   data,
   selected,
   shape,
-}: NodeProps & { shape: 'circle' | 'oppositeD' | 'roundedRectangle' }) {
+}: NodeProps & { shape: 'circle' | 'oppositeD' | 'roundedRectangle' | 'rectangleWithText' }) {
   const nodeData = data as NodeData & { unsatisfied?: boolean };
   const tpl = getTemplate(nodeData);
   const effectiveHandles = getEffectiveHandles(tpl, nodeData);
@@ -34,8 +34,16 @@ function BaseNode({
   const handleCount = effectiveHandles.length ?? 0;
   const extraHandles = Math.max(0, handleCount - 4);
   const scale = 1 + extraHandles * 0.15;
-  const size = 48 * scale;
+
+  // rectangleWithText is larger than standard roundedRectangle
+  const baseSize = shape === 'rectangleWithText' ? 80 : 48;
+  const size = baseSize * scale;
   const unsatisfied = nodeData.unsatisfied === true;
+
+  // Get inline text from actionState for rectangleWithText shape
+  const inlineText = shape === 'rectangleWithText'
+    ? String(nodeData.actionState?.inlineText ?? 'LLM')
+    : '';
 
   // When handles are dynamic (e.g. actionState changes), React Flow needs to
   // recalculate handle bounds. Otherwise edges referencing new handle IDs
@@ -61,7 +69,7 @@ function BaseNode({
       <div
         className={`relative flex items-center justify-center transition-transform duration-150 ${baseClass}`}
         style={{
-          width: `${size}px`,
+          width: shape === 'rectangleWithText' ? `${size * 1.5}px` : `${size}px`,
           height: `${size}px`,
           backgroundColor: GRID_COLOR,
           borderColor: unsatisfied ? 'rgba(239, 68, 68, 0.9)' : 'rgba(75, 85, 99, 0.9)',
@@ -71,6 +79,15 @@ function BaseNode({
           transform: selected ? 'scale(1.05)' : 'scale(1)',
         }}
       >
+        {/* Display inline text for rectangleWithText shape */}
+        {shape === 'rectangleWithText' && inlineText && (
+          <div className="absolute inset-0 flex items-center justify-center px-2">
+            <span className="text-xs text-slate-100 font-medium truncate max-w-full">
+              {inlineText}
+            </span>
+          </div>
+        )}
+
         {tpl
           ? effectiveHandles.map((h) => {
               const sideHandles = effectiveHandles.filter(
@@ -139,4 +156,8 @@ export function OppositeDNode(props: NodeProps) {
 
 export function RoundedRectangleNode(props: NodeProps) {
   return <BaseNode {...props} shape="roundedRectangle" />;
+}
+
+export function RectangleWithTextNode(props: NodeProps) {
+  return <BaseNode {...props} shape="rectangleWithText" />;
 }

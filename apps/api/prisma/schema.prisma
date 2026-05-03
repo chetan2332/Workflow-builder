@@ -28,6 +28,48 @@ enum NodeType {
   OTHER
 }
 
+enum NodeShape {
+  CIRCLE
+  OPPOSITE_D
+  ROUNDED_RECTANGLE
+  RECTANGLE_WITH_TEXT
+}
+
+model NodeTemplate {
+  id          String   @id @default(cuid())
+
+  // Template identity
+  templateId  String   // "HTTP", "LLM", "IF", "SWITCH" - semantic ID
+  version     String   @default("1.0.0") // Version for breaking changes
+  name        String   // "HTTP Request", "LLM", "If/Else"
+  description String?
+
+  // Visual properties
+  nodeType    NodeType
+  shape       NodeShape
+
+  // Handle configuration (static definition)
+  handlesConfig Json   // Array of HandleConfig from JSON files
+
+  // Action configuration (fields definition)
+  actionConfig Json?   // NodeActionConfig from JSON files
+
+  // Dynamic handles support
+  dynamicHandles Json? // { inputs: boolean, outputs: boolean }
+
+  // Metadata
+  isActive    Boolean  @default(true)  // Can be deactivated
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  nodes       Node[]
+
+  @@unique([templateId, version]) // Allow multiple versions
+  @@index([templateId, isActive])
+  @@index([nodeType])
+}
+
 model Workflow {
   id          String         @id @default(cuid())
   name        String
@@ -39,21 +81,25 @@ model Workflow {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status, updatedAt])
 }
 
 model Node {
-  id         String   @id @default(cuid())
+  id         String   @id  // Client-provided (nanoid) for stability
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
-  type  NodeType
-  label String?
+  // Template reference
+  templateId      String
+  templateVersion String  @default("1.0.0")
+  template        NodeTemplate @relation(fields: [templateId, templateVersion], references: [templateId, version])
 
-  positionX Float
-  positionY Float
-
-  // arbitrary config, including code, settings, etc.
-  config Json
+  // Instance-specific data
+  label       String?
+  positionX   Float
+  positionY   Float
+  actionState Json @default("{}")  // User configuration
 
   // optional back-relations to edges (nice to have)
   outgoingEdges Edge[] @relation("EdgeSource")
@@ -61,10 +107,13 @@ model Node {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([workflowId])
+  @@index([templateId, templateVersion])
 }
 
 model Edge {
-  id String @id @default(cuid())
+  id String @id  // Client-provided (nanoid) for stability
 
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
@@ -83,4 +132,8 @@ model Edge {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([workflowId])
+  @@index([sourceNodeId])
+  @@index([targetNodeId])
 }

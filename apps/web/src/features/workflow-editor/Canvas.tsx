@@ -75,7 +75,7 @@ function CanvasInner({
     ...n,
     data: {
       ...(n.data as object),
-      unsatisfied: unsatisfiedNodeIds.has(n.id),
+      unsatisfied: n.data?.isDummy ? false : unsatisfiedNodeIds.has(n.id), // Don't validate dummy nodes
     },
   }));
 

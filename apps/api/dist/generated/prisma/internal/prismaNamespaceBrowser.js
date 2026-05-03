@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.JsonNullValueInput = exports.SortOrder = exports.EdgeScalarFieldEnum = exports.NodeScalarFieldEnum = exports.WorkflowScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.NullsOrder = exports.JsonNullValueFilter = exports.QueryMode = exports.NullableJsonNullValueInput = exports.JsonNullValueInput = exports.SortOrder = exports.EdgeScalarFieldEnum = exports.NodeScalarFieldEnum = exports.WorkflowScalarFieldEnum = exports.NodeTemplateScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -45,6 +45,7 @@ exports.DbNull = runtime.DbNull;
 exports.JsonNull = runtime.JsonNull;
 exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
+    NodeTemplate: 'NodeTemplate',
     Workflow: 'Workflow',
     Node: 'Node',
     Edge: 'Edge'
@@ -55,6 +56,21 @@ exports.TransactionIsolationLevel = runtime.makeStrictEnum({
     RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
 });
+exports.NodeTemplateScalarFieldEnum = {
+    id: 'id',
+    templateId: 'templateId',
+    version: 'version',
+    name: 'name',
+    description: 'description',
+    nodeType: 'nodeType',
+    shape: 'shape',
+    handlesConfig: 'handlesConfig',
+    actionConfig: 'actionConfig',
+    dynamicHandles: 'dynamicHandles',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
 exports.WorkflowScalarFieldEnum = {
     id: 'id',
     name: 'name',
@@ -66,11 +82,12 @@ exports.WorkflowScalarFieldEnum = {
 exports.NodeScalarFieldEnum = {
     id: 'id',
     workflowId: 'workflowId',
-    type: 'type',
+    templateId: 'templateId',
+    templateVersion: 'templateVersion',
     label: 'label',
     positionX: 'positionX',
     positionY: 'positionY',
-    config: 'config',
+    actionState: 'actionState',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -100,13 +117,13 @@ exports.QueryMode = {
     default: 'default',
     insensitive: 'insensitive'
 };
-exports.NullsOrder = {
-    first: 'first',
-    last: 'last'
-};
 exports.JsonNullValueFilter = {
     DbNull: exports.DbNull,
     JsonNull: exports.JsonNull,
     AnyNull: exports.AnyNull
+};
+exports.NullsOrder = {
+    first: 'first',
+    last: 'last'
 };
 //# sourceMappingURL=prismaNamespaceBrowser.js.map

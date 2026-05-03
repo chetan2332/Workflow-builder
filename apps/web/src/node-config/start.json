@@ -9,14 +9,25 @@
       "id": "out",
       "side": "right",
       "kind": "output",
-      "type": "flow",
+      "type": "json",
       "label": "start"
     }
   ],
   "action": {
     "title": "Configure Start",
-    "description": "Enter initial parameters for the workflow.",
-    "fields": []
+    "description": "Define workflow input structure and test payload.",
+    "tabs": ["logic"],
+    "fields": [
+      {
+        "id": "samplePayload",
+        "label": "Sample payload (JSON)",
+        "type": "json",
+        "required": false,
+        "placeholder": "{ }",
+        "helpText": "Test payload for manual runs",
+        "tab": "logic"
+      }
+    ]
   }
 }
 
