@@ -9,7 +9,7 @@ const MOCK_CREDENTIALS = [
 ];
 
 export function CredentialRefField({ field, value, onChange }: FieldProps) {
-  const stringValue = String(value ?? field.defaultValue ?? 'none');
+  const stringValue = String(value ?? field.default ?? 'none');
 
   return (
     <div className="space-y-1">

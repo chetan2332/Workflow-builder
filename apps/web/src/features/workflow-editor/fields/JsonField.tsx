@@ -3,7 +3,7 @@ import type { FieldProps } from './types';
 import { CodeMirrorEditor } from './CodeMirrorEditor';
 
 export function JsonField({ field, value, onChange, onValidation }: FieldProps) {
-  const stringValue = String(value ?? field.defaultValue ?? '');
+  const stringValue = String(value ?? field.default ?? '');
   const [error, setError] = useState<string | null>(null);
 
   // Validate JSON on change

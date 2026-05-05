@@ -1,6 +1,5 @@
 type EditorTopBarProps = {
-  workflowId?: string;
-  workflowName?: string;
+  workflowName: string;
   status?: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
   onRun?: () => void;
   onSave?: () => void;
@@ -10,7 +9,6 @@ type EditorTopBarProps = {
 };
 
 export function EditorTopBar({
-  workflowId,
   workflowName,
   status = 'DRAFT',
   onRun,
@@ -44,10 +42,7 @@ export function EditorTopBar({
     <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
       <div>
         <p className="text-[11px] text-slate-400">
-          Workflows / {workflowName ?? 'Untitled workflow'}
-        </p>
-        <p className="text-sm font-medium">
-          {workflowId ? `Workflow #${workflowId}` : 'New workflow'}
+          Workflows / {workflowName}
         </p>
       </div>
       <div className="flex items-center gap-3">

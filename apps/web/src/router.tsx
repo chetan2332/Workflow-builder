@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { WorkflowsListPage } from './routes/WorkflowsListPage';
 import { WorkflowEditorPage } from './routes/WorkflowEditorPage';
 import { AppShell } from './shell/AppShell';
-// import { WorkflowEditorPage } from './routes/WorkflowEditorPage';
 
 const router = createBrowserRouter([
   {

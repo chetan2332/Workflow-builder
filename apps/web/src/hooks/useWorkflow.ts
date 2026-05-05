@@ -2,13 +2,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWorkflow, updateWorkflow } from '../api/workflows';
 
 export function useWorkflow(id: string | undefined) {
-  return useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['workflow', id],
     queryFn: () => fetchWorkflow(id!),
     enabled: !!id,
     staleTime: 0, // Always fetch fresh data for active editing
     refetchOnWindowFocus: false, // Don't refetch when switching tabs
   });
+  return { data, isLoading, error };
 }
 
 export function useUpdateWorkflow(id: string | undefined) {

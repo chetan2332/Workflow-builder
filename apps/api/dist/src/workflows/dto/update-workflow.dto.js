@@ -6,6 +6,10 @@ class UpdateWorkflowDto {
     name;
     description;
     status;
+    nodes;
+    edges;
+    createdAt;
+    updatedAt;
 }
 exports.UpdateWorkflowDto = UpdateWorkflowDto;
 //# sourceMappingURL=update-workflow.dto.js.map

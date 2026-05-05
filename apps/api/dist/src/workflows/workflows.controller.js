@@ -16,7 +16,7 @@ exports.WorkflowsController = void 0;
 const common_1 = require("@nestjs/common");
 const workflows_service_1 = require("./workflows.service");
 const create_workflow_dto_1 = require("./dto/create-workflow.dto");
-const save_workflow_dto_1 = require("./dto/save-workflow.dto");
+const update_workflow_dto_1 = require("./dto/update-workflow.dto");
 let WorkflowsController = class WorkflowsController {
     workflowsService;
     constructor(workflowsService) {
@@ -71,7 +71,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, save_workflow_dto_1.UpdateWorkflowDto]),
+    __metadata("design:paramtypes", [String, update_workflow_dto_1.UpdateWorkflowDto]),
     __metadata("design:returntype", void 0)
 ], WorkflowsController.prototype, "update", null);
 __decorate([

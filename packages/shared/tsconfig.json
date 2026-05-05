@@ -11,6 +11,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    // diable this error
+    // ignore: this line for error
     "moduleResolution": "node",
     "resolveJsonModule": true
   },

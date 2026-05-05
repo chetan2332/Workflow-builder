@@ -13,25 +13,13 @@ import {
   MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { nodeTypes } from './NodeTypes';
+import { nodeTypes } from './nodes';
 import { isValidConnection } from './workflowValidation';
-import type { NodeDefinitionId } from '../../nodeTemplates';
+import type { WorkflowNode } from '@n8n-project/shared';
+import { DRAG_TYPE } from './NodeLibraryDrawer';
 
-
-const DRAG_TYPE = 'application/reactflow';
 const CANVAS_BG = '#020617';
 const GRID_COLOR = '#1f2937';
-
-type CanvasInnerProps = {
-  nodes: Node[];
-  edges: Edge[];
-  onNodesChange: OnNodesChange<Node>;
-  onEdgesChange: OnEdgesChange<Edge>;
-  onConnect: (connection: Connection) => void;
-  onNodeDoubleClick?: (node: Node) => void;
-  onAddNodeAtPosition: (definitionId: NodeDefinitionId, position: { x: number; y: number }) => void;
-  unsatisfiedNodeIds: Set<string>;
-};
 
 function CanvasInner({
   nodes,
@@ -42,19 +30,19 @@ function CanvasInner({
   onNodeDoubleClick,
   onAddNodeAtPosition,
   unsatisfiedNodeIds,
-}: CanvasInnerProps) {
+}: CanvasProps) {
   const { screenToFlowPosition } = useReactFlow();
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
-      const definitionId = event.dataTransfer.getData(DRAG_TYPE) as NodeDefinitionId;
-      if (!definitionId) return;
+      const nodeDefinitionId = event.dataTransfer.getData(DRAG_TYPE) as string;
+      if (!nodeDefinitionId) return;
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
-      onAddNodeAtPosition(definitionId, position);
+      onAddNodeAtPosition(nodeDefinitionId, position);
     },
     [screenToFlowPosition, onAddNodeAtPosition],
   );
@@ -74,11 +62,12 @@ function CanvasInner({
   const nodesWithValidation = nodes.map((n) => ({
     ...n,
     data: {
-      ...(n.data as object),
+      ...(n.data as WorkflowNode),
       unsatisfied: n.data?.isDummy ? false : unsatisfiedNodeIds.has(n.id), // Don't validate dummy nodes
     },
   }));
 
+  // TODO: check if c = connection is valid
   const isValidConnectionCallback = useCallback(
     (connection: Connection | Edge) => {
       const c =
@@ -103,7 +92,7 @@ function CanvasInner({
       onEdgesChange={onEdgesChange}
       onConnect={handleConnect}
       isValidConnection={isValidConnectionCallback}
-      onNodeDoubleClick={(_, node) => onNodeDoubleClick?.(node as Node)}
+      onNodeDoubleClick={(_, node) => onNodeDoubleClick?.(node as Node<WorkflowNode>)}
       onDrop={onDrop}
       onDragOver={onDragOver}
       className="w-full h-full"
@@ -126,13 +115,13 @@ function CanvasInner({
 }
 
 type CanvasProps = {
-  nodes: Node[];
+  nodes: Node<WorkflowNode>[];
   edges: Edge[];
-  onNodesChange: OnNodesChange<Node>;
+  onNodesChange: OnNodesChange<Node<WorkflowNode>>;
   onEdgesChange: OnEdgesChange<Edge>;
   onConnect: (connection: Connection) => void;
-  onNodeDoubleClick?: (node: Node) => void;
-  onAddNodeAtPosition: (definitionId: NodeDefinitionId, position: { x: number; y: number }) => void;
+  onNodeDoubleClick?: (node: Node<WorkflowNode>) => void;
+  onAddNodeAtPosition: (definitionId: string, position: { x: number; y: number }) => void;
   unsatisfiedNodeIds: Set<string>;
 };
 

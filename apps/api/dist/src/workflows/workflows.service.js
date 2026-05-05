@@ -12,13 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkflowsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const templates_service_1 = require("../templates/templates.service");
 let WorkflowsService = class WorkflowsService {
     prisma;
-    templatesService;
-    constructor(prisma, templatesService) {
+    constructor(prisma) {
         this.prisma = prisma;
-        this.templatesService = templatesService;
     }
     async findAll(query) {
         const page = query?.page || 1;
@@ -48,18 +45,23 @@ let WorkflowsService = class WorkflowsService {
         return { workflows, total, page, pageSize: limit };
     }
     async findOne(id) {
-        const workflow = await this.prisma.workflow.findUnique({
+        return this.prisma.workflow.findUnique({
             where: { id },
             include: {
                 nodes: {
                     select: {
                         id: true,
-                        templateId: true,
-                        templateVersion: true,
-                        label: true,
+                        type: true,
+                        version: true,
+                        category: true,
                         positionX: true,
                         positionY: true,
-                        actionState: true,
+                        config: true,
+                        label: true,
+                        description: true,
+                        inputHandles: true,
+                        outputHandles: true,
+                        configHandles: true,
                     },
                 },
                 edges: {
@@ -73,20 +75,6 @@ let WorkflowsService = class WorkflowsService {
                 },
             },
         });
-        if (!workflow) {
-            return null;
-        }
-        const templateIds = Array.from(new Set(workflow.nodes.map(n => n.templateId)));
-        const validTemplates = await this.templatesService.getMany(templateIds);
-        const templateMap = new Map(validTemplates.map(t => [t.templateId, t]));
-        const nodesWithTemplates = workflow.nodes.map(node => ({
-            ...node,
-            template: templateMap.get(node.templateId),
-        }));
-        return {
-            ...workflow,
-            nodes: nodesWithTemplates,
-        };
     }
     create(dto) {
         return this.prisma.workflow.create({
@@ -97,12 +85,6 @@ let WorkflowsService = class WorkflowsService {
         });
     }
     async update(id, dto) {
-        const templateIds = Array.from(new Set(dto.nodes.map(n => n.templateId)));
-        const validTemplates = await this.templatesService.getMany(templateIds);
-        const missingTemplates = templateIds.filter(tid => !validTemplates.some(t => t.templateId === tid));
-        if (missingTemplates.length > 0) {
-            throw new common_1.BadRequestException(`Unknown templates: ${missingTemplates.join(', ')}`);
-        }
         const nodeIds = new Set(dto.nodes.map(n => n.id));
         const invalidEdges = dto.edges.filter(e => !nodeIds.has(e.sourceNodeId) || !nodeIds.has(e.targetNodeId));
         if (invalidEdges.length > 0) {
@@ -152,12 +134,17 @@ let WorkflowsService = class WorkflowsService {
                     data: nodesToCreate.map(n => ({
                         id: n.id,
                         workflowId: id,
-                        templateId: n.templateId,
-                        templateVersion: '1.0.0',
-                        label: n.label,
+                        type: n.type,
+                        version: n.version,
+                        category: n.category,
                         positionX: n.positionX,
                         positionY: n.positionY,
-                        actionState: n.actionState,
+                        config: n.config,
+                        label: n.label,
+                        description: n.description,
+                        inputHandles: n.inputHandles,
+                        outputHandles: n.outputHandles,
+                        configHandles: n.configHandles,
                     })),
                 });
             }
@@ -165,10 +152,17 @@ let WorkflowsService = class WorkflowsService {
                 await Promise.all(nodesToUpdate.map(n => tx.node.update({
                     where: { id: n.id },
                     data: {
-                        label: n.label,
+                        type: n.type,
+                        version: n.version,
+                        category: n.category,
                         positionX: n.positionX,
                         positionY: n.positionY,
-                        actionState: n.actionState,
+                        config: n.config,
+                        label: n.label,
+                        description: n.description,
+                        inputHandles: n.inputHandles,
+                        outputHandles: n.outputHandles,
+                        configHandles: n.configHandles,
                     },
                 })));
             }
@@ -208,7 +202,6 @@ let WorkflowsService = class WorkflowsService {
 exports.WorkflowsService = WorkflowsService;
 exports.WorkflowsService = WorkflowsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        templates_service_1.TemplatesService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], WorkflowsService);
 //# sourceMappingURL=workflows.service.js.map

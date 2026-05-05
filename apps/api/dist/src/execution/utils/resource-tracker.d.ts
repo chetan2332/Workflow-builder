@@ -1,4 +1,26 @@
-import type { NodeExecutionMetadata, ExecutionLog, ExecutionWarning } from '@n8n-project/shared';
+export interface ExecutionLog {
+    timestamp: number;
+    level: 'info' | 'debug' | 'error';
+    message: string;
+    context?: Record<string, unknown>;
+}
+export interface ExecutionWarning {
+    timestamp: number;
+    code: string;
+    message: string;
+    field?: string;
+}
+export interface NodeExecutionMetadata {
+    startTime: number;
+    endTime: number;
+    durationMs: number;
+    itemsProcessed: number;
+    itemsOutput: number;
+    memoryUsedMb: number;
+    apiCallsMade: number;
+    logs: ExecutionLog[];
+    warnings: ExecutionWarning[];
+}
 export declare class ResourceTracker {
     private startTime;
     private endTime;

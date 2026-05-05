@@ -1,57 +1,34 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  createWorkflow,
-  deleteWorkflow,
-  getWorkflows,
-  type Workflow,
-} from '../api/workflows';
-import { useMemo, useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useWorkflows, useCreateWorkflow, useDeleteWorkflow } from '../hooks/useWorkflows';
+import type { Workflow } from '@n8n-project/shared';
 
 export function WorkflowsListPage() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['workflows'],
-    queryFn: getWorkflows,
-  });
-
-  const workflows = useMemo(() => data ?? [], [data]);
+  const { workflows, isLoading, error } = useWorkflows();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [workflowToDelete, setWorkflowToDelete] = useState<Workflow | null>(null);
 
-  const createMutation = useMutation({
-    mutationFn: createWorkflow,
-    onSuccess: (wf) => {
-      queryClient.setQueryData(['workflows'], (old: Workflow[] | undefined) => {
-        const prev = old ?? [];
-        return [wf, ...prev];
-      });
-      setIsCreateOpen(false);
-      setName('');
-      setDescription('');
-      navigate(`/workflows/${wf.id}`);
-    },
-  });
+  const createMutation = useCreateWorkflow();
+  const deleteMutation = useDeleteWorkflow();
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteWorkflow,
-    onSuccess: (_, deletedId) => {
-      queryClient.setQueryData(['workflows'], (old: Workflow[] | undefined) => {
-        const prev = old ?? [];
-        return prev.filter((w) => w.id !== deletedId);
-      });
-    },
-  });
+  const handleCreateSuccess = (wf: Workflow) => {
+    setIsCreateOpen(false);
+    setName('');
+    setDescription('');
+    navigate(`/workflows/${wf.id}`);
+  };
 
-  const onCreateSubmit = (e: FormEvent) => {
+  const onCreateSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!name.trim()) return;
-    createMutation.mutate({ name, description });
+    createMutation.mutate({ name, description }, {
+      onSuccess: handleCreateSuccess,
+    });
   };
 
   return (
@@ -68,7 +45,7 @@ export function WorkflowsListPage() {
       </div>
 
       {isLoading && <p className="text-muted">Loading…</p>}
-      {isError && <p className="text-sm text-red-400">Failed to load workflows.</p>}
+      {error && <p className="text-sm text-red-400">Failed to load workflows.</p>}
 
       <div className="space-y-2">
         {workflows.map((wf: Workflow) => (

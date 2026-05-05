@@ -1,18 +1,16 @@
+// Core field components (match ConfigField types)
 export { BooleanField } from './BooleanField';
+export { StringField } from './StringField';
+export { NumberField } from './NumberField';
+export { SelectField } from './SelectField';
+export { TextareaField } from './TextareaField';
 export { CodeField } from './CodeField';
-export { CredentialRefField } from './CredentialRefField';
-export { EnumField } from './EnumField';
-export { FileRefField } from './FileRefField';
-export { HandleCountField } from './HandleCountField';
-export { HandleLabelsField } from './HandleLabelsField';
-export { HandleTypesField } from './HandleTypesField';
-export { HttpMethodField } from './HttpMethodField';
-export { InlineTextField } from './InlineTextField';
 export { JsonField } from './JsonField';
 export { KeyValueField } from './KeyValueField';
-export { ModelRefField } from './ModelRefField';
-export { SecretRefField } from './SecretRefField';
-export { TextField } from './TextField';
-export { TriggerInvokeInfoField } from './TriggerInvokeInfoField';
-export { UrlField } from './UrlField';
+export { FileField } from './FileField';
+export { CredentialRefField } from './CredentialRefField';
+
+// Field component map
+export { FIELD_COMPONENTS, getFieldComponent } from './fieldComponentMap';
+
 export type { FieldProps } from './types';

@@ -1,15 +1,13 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { TemplatesService } from '../templates/templates.service';
 import { CreateWorkflowDto } from './dto/create-workflow.dto';
-import { UpdateWorkflowDto } from './dto/save-workflow.dto';
+import { UpdateWorkflowDto } from './dto/update-workflow.dto';
 
 @Injectable()
 export class WorkflowsService {
 
     constructor(
         private readonly prisma: PrismaService,
-        private readonly templatesService: TemplatesService,
     ) {}
 
     async findAll(query?: { page?: number; limit?: number; status?: string }) {
@@ -44,18 +42,23 @@ export class WorkflowsService {
     }
 
     async findOne(id: string) {
-        const workflow = await this.prisma.workflow.findUnique({
+        return this.prisma.workflow.findUnique({
             where: { id },
             include: {
                 nodes: {
                     select: {
                         id: true,
-                        templateId: true,
-                        templateVersion: true,
-                        label: true,
+                        type: true,
+                        version: true,
+                        category: true,
                         positionX: true,
                         positionY: true,
-                        actionState: true,
+                        config: true,
+                        label: true,
+                        description: true,
+                        inputHandles: true,
+                        outputHandles: true,
+                        configHandles: true,
                     },
                 },
                 edges: {
@@ -69,28 +72,6 @@ export class WorkflowsService {
                 },
             },
         });
-
-        if (!workflow) {
-            return null;
-        }
-
-        // Enrich nodes with full template data from cache
-        const templateIds = Array.from(new Set(workflow.nodes.map(n => n.templateId)));
-        const validTemplates = await this.templatesService.getMany(templateIds);
-
-        // Create a map for fast lookup
-        const templateMap = new Map(validTemplates.map(t => [t.templateId, t]));
-
-        // Attach template to each node
-        const nodesWithTemplates = workflow.nodes.map(node => ({
-            ...node,
-            template: templateMap.get(node.templateId),
-        }));
-
-        return {
-            ...workflow,
-            nodes: nodesWithTemplates,
-        };
     }
 
     create(dto: CreateWorkflowDto) {
@@ -103,20 +84,6 @@ export class WorkflowsService {
     }
 
     async update(id: string, dto: UpdateWorkflowDto) {
-        // Validate templates exist
-        const templateIds = Array.from(new Set(dto.nodes.map(n => n.templateId)));
-        const validTemplates = await this.templatesService.getMany(templateIds);
-
-        const missingTemplates = templateIds.filter(
-            tid => !validTemplates.some(t => t.templateId === tid)
-        );
-
-        if (missingTemplates.length > 0) {
-            throw new BadRequestException(
-                `Unknown templates: ${missingTemplates.join(', ')}`
-            );
-        }
-
         // Validate edges reference valid nodes
         const nodeIds = new Set(dto.nodes.map(n => n.id));
         const invalidEdges = dto.edges.filter(
@@ -189,12 +156,17 @@ export class WorkflowsService {
                     data: nodesToCreate.map(n => ({
                         id: n.id,
                         workflowId: id,
-                        templateId: n.templateId,
-                        templateVersion: '1.0.0',
-                        label: n.label,
+                        type: n.type,
+                        version: n.version,
+                        category: n.category as any,
                         positionX: n.positionX,
                         positionY: n.positionY,
-                        actionState: n.actionState,
+                        config: n.config as any,
+                        label: n.label,
+                        description: n.description,
+                        inputHandles: n.inputHandles as any,
+                        outputHandles: n.outputHandles as any,
+                        configHandles: n.configHandles as any,
                     })),
                 });
             }
@@ -206,10 +178,17 @@ export class WorkflowsService {
                         tx.node.update({
                             where: { id: n.id },
                             data: {
-                                label: n.label,
+                                type: n.type,
+                                version: n.version,
+                                category: n.category as any,
                                 positionX: n.positionX,
                                 positionY: n.positionY,
-                                actionState: n.actionState,
+                                config: n.config as any,
+                                label: n.label,
+                                description: n.description,
+                                inputHandles: n.inputHandles as any,
+                                outputHandles: n.outputHandles as any,
+                                configHandles: n.configHandles as any,
                             },
                         })
                     )

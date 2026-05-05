@@ -8,64 +8,62 @@ export type AggregateEdge = {
 };
 export type EdgeMinAggregateOutputType = {
     id: string | null;
-    workflowId: string | null;
     sourceNodeId: string | null;
     targetNodeId: string | null;
     sourceHandle: string | null;
     targetHandle: string | null;
+    workflowId: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type EdgeMaxAggregateOutputType = {
     id: string | null;
-    workflowId: string | null;
     sourceNodeId: string | null;
     targetNodeId: string | null;
     sourceHandle: string | null;
     targetHandle: string | null;
+    workflowId: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type EdgeCountAggregateOutputType = {
     id: number;
-    workflowId: number;
     sourceNodeId: number;
     targetNodeId: number;
     sourceHandle: number;
     targetHandle: number;
-    meta: number;
+    workflowId: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
 };
 export type EdgeMinAggregateInputType = {
     id?: true;
-    workflowId?: true;
     sourceNodeId?: true;
     targetNodeId?: true;
     sourceHandle?: true;
     targetHandle?: true;
+    workflowId?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type EdgeMaxAggregateInputType = {
     id?: true;
-    workflowId?: true;
     sourceNodeId?: true;
     targetNodeId?: true;
     sourceHandle?: true;
     targetHandle?: true;
+    workflowId?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type EdgeCountAggregateInputType = {
     id?: true;
-    workflowId?: true;
     sourceNodeId?: true;
     targetNodeId?: true;
     sourceHandle?: true;
     targetHandle?: true;
-    meta?: true;
+    workflowId?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -96,12 +94,11 @@ export type EdgeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 };
 export type EdgeGroupByOutputType = {
     id: string;
-    workflowId: string;
     sourceNodeId: string;
     targetNodeId: string;
     sourceHandle: string | null;
     targetHandle: string | null;
-    meta: runtime.JsonValue | null;
+    workflowId: string;
     createdAt: Date;
     updatedAt: Date;
     _count: EdgeCountAggregateOutputType | null;
@@ -116,12 +113,11 @@ export type EdgeWhereInput = {
     OR?: Prisma.EdgeWhereInput[];
     NOT?: Prisma.EdgeWhereInput | Prisma.EdgeWhereInput[];
     id?: Prisma.StringFilter<"Edge"> | string;
-    workflowId?: Prisma.StringFilter<"Edge"> | string;
     sourceNodeId?: Prisma.StringFilter<"Edge"> | string;
     targetNodeId?: Prisma.StringFilter<"Edge"> | string;
     sourceHandle?: Prisma.StringNullableFilter<"Edge"> | string | null;
     targetHandle?: Prisma.StringNullableFilter<"Edge"> | string | null;
-    meta?: Prisma.JsonNullableFilter<"Edge">;
+    workflowId?: Prisma.StringFilter<"Edge"> | string;
     createdAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
     workflow?: Prisma.XOR<Prisma.WorkflowScalarRelationFilter, Prisma.WorkflowWhereInput>;
@@ -130,12 +126,11 @@ export type EdgeWhereInput = {
 };
 export type EdgeOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
-    workflowId?: Prisma.SortOrder;
     sourceNodeId?: Prisma.SortOrder;
     targetNodeId?: Prisma.SortOrder;
     sourceHandle?: Prisma.SortOrderInput | Prisma.SortOrder;
     targetHandle?: Prisma.SortOrderInput | Prisma.SortOrder;
-    meta?: Prisma.SortOrderInput | Prisma.SortOrder;
+    workflowId?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     workflow?: Prisma.WorkflowOrderByWithRelationInput;
@@ -147,12 +142,11 @@ export type EdgeWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.EdgeWhereInput | Prisma.EdgeWhereInput[];
     OR?: Prisma.EdgeWhereInput[];
     NOT?: Prisma.EdgeWhereInput | Prisma.EdgeWhereInput[];
-    workflowId?: Prisma.StringFilter<"Edge"> | string;
     sourceNodeId?: Prisma.StringFilter<"Edge"> | string;
     targetNodeId?: Prisma.StringFilter<"Edge"> | string;
     sourceHandle?: Prisma.StringNullableFilter<"Edge"> | string | null;
     targetHandle?: Prisma.StringNullableFilter<"Edge"> | string | null;
-    meta?: Prisma.JsonNullableFilter<"Edge">;
+    workflowId?: Prisma.StringFilter<"Edge"> | string;
     createdAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
     workflow?: Prisma.XOR<Prisma.WorkflowScalarRelationFilter, Prisma.WorkflowWhereInput>;
@@ -161,12 +155,11 @@ export type EdgeWhereUniqueInput = Prisma.AtLeast<{
 }, "id">;
 export type EdgeOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
-    workflowId?: Prisma.SortOrder;
     sourceNodeId?: Prisma.SortOrder;
     targetNodeId?: Prisma.SortOrder;
     sourceHandle?: Prisma.SortOrderInput | Prisma.SortOrder;
     targetHandle?: Prisma.SortOrderInput | Prisma.SortOrder;
-    meta?: Prisma.SortOrderInput | Prisma.SortOrder;
+    workflowId?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.EdgeCountOrderByAggregateInput;
@@ -178,12 +171,11 @@ export type EdgeScalarWhereWithAggregatesInput = {
     OR?: Prisma.EdgeScalarWhereWithAggregatesInput[];
     NOT?: Prisma.EdgeScalarWhereWithAggregatesInput | Prisma.EdgeScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"Edge"> | string;
-    workflowId?: Prisma.StringWithAggregatesFilter<"Edge"> | string;
     sourceNodeId?: Prisma.StringWithAggregatesFilter<"Edge"> | string;
     targetNodeId?: Prisma.StringWithAggregatesFilter<"Edge"> | string;
     sourceHandle?: Prisma.StringNullableWithAggregatesFilter<"Edge"> | string | null;
     targetHandle?: Prisma.StringNullableWithAggregatesFilter<"Edge"> | string | null;
-    meta?: Prisma.JsonNullableWithAggregatesFilter<"Edge">;
+    workflowId?: Prisma.StringWithAggregatesFilter<"Edge"> | string;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Edge"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Edge"> | Date | string;
 };
@@ -191,7 +183,6 @@ export type EdgeCreateInput = {
     id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     workflow: Prisma.WorkflowCreateNestedOneWithoutEdgesInput;
@@ -200,12 +191,11 @@ export type EdgeCreateInput = {
 };
 export type EdgeUncheckedCreateInput = {
     id: string;
-    workflowId: string;
     sourceNodeId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -213,7 +203,6 @@ export type EdgeUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     workflow?: Prisma.WorkflowUpdateOneRequiredWithoutEdgesNestedInput;
@@ -222,23 +211,21 @@ export type EdgeUpdateInput = {
 };
 export type EdgeUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     targetNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeCreateManyInput = {
     id: string;
-    workflowId: string;
     sourceNodeId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -246,18 +233,16 @@ export type EdgeUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     targetNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -271,32 +256,31 @@ export type EdgeOrderByRelationAggregateInput = {
 };
 export type EdgeCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
-    workflowId?: Prisma.SortOrder;
     sourceNodeId?: Prisma.SortOrder;
     targetNodeId?: Prisma.SortOrder;
     sourceHandle?: Prisma.SortOrder;
     targetHandle?: Prisma.SortOrder;
-    meta?: Prisma.SortOrder;
+    workflowId?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
 export type EdgeMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
-    workflowId?: Prisma.SortOrder;
     sourceNodeId?: Prisma.SortOrder;
     targetNodeId?: Prisma.SortOrder;
     sourceHandle?: Prisma.SortOrder;
     targetHandle?: Prisma.SortOrder;
+    workflowId?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
 export type EdgeMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
-    workflowId?: Prisma.SortOrder;
     sourceNodeId?: Prisma.SortOrder;
     targetNodeId?: Prisma.SortOrder;
     sourceHandle?: Prisma.SortOrder;
     targetHandle?: Prisma.SortOrder;
+    workflowId?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -418,7 +402,6 @@ export type EdgeCreateWithoutWorkflowInput = {
     id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     sourceNode: Prisma.NodeCreateNestedOneWithoutOutgoingEdgesInput;
@@ -430,7 +413,6 @@ export type EdgeUncheckedCreateWithoutWorkflowInput = {
     targetNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -460,12 +442,11 @@ export type EdgeScalarWhereInput = {
     OR?: Prisma.EdgeScalarWhereInput[];
     NOT?: Prisma.EdgeScalarWhereInput | Prisma.EdgeScalarWhereInput[];
     id?: Prisma.StringFilter<"Edge"> | string;
-    workflowId?: Prisma.StringFilter<"Edge"> | string;
     sourceNodeId?: Prisma.StringFilter<"Edge"> | string;
     targetNodeId?: Prisma.StringFilter<"Edge"> | string;
     sourceHandle?: Prisma.StringNullableFilter<"Edge"> | string | null;
     targetHandle?: Prisma.StringNullableFilter<"Edge"> | string | null;
-    meta?: Prisma.JsonNullableFilter<"Edge">;
+    workflowId?: Prisma.StringFilter<"Edge"> | string;
     createdAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Edge"> | Date | string;
 };
@@ -473,7 +454,6 @@ export type EdgeCreateWithoutSourceNodeInput = {
     id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     workflow: Prisma.WorkflowCreateNestedOneWithoutEdgesInput;
@@ -481,11 +461,10 @@ export type EdgeCreateWithoutSourceNodeInput = {
 };
 export type EdgeUncheckedCreateWithoutSourceNodeInput = {
     id: string;
-    workflowId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -501,7 +480,6 @@ export type EdgeCreateWithoutTargetNodeInput = {
     id: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     workflow: Prisma.WorkflowCreateNestedOneWithoutEdgesInput;
@@ -509,11 +487,10 @@ export type EdgeCreateWithoutTargetNodeInput = {
 };
 export type EdgeUncheckedCreateWithoutTargetNodeInput = {
     id: string;
-    workflowId: string;
     sourceNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -557,7 +534,6 @@ export type EdgeCreateManyWorkflowInput = {
     targetNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -565,7 +541,6 @@ export type EdgeUpdateWithoutWorkflowInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     sourceNode?: Prisma.NodeUpdateOneRequiredWithoutOutgoingEdgesNestedInput;
@@ -577,7 +552,6 @@ export type EdgeUncheckedUpdateWithoutWorkflowInput = {
     targetNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -587,27 +561,24 @@ export type EdgeUncheckedUpdateManyWithoutWorkflowInput = {
     targetNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeCreateManySourceNodeInput = {
     id: string;
-    workflowId: string;
     targetNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type EdgeCreateManyTargetNodeInput = {
     id: string;
-    workflowId: string;
     sourceNodeId: string;
     sourceHandle?: string | null;
     targetHandle?: string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -615,7 +586,6 @@ export type EdgeUpdateWithoutSourceNodeInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     workflow?: Prisma.WorkflowUpdateOneRequiredWithoutEdgesNestedInput;
@@ -623,21 +593,19 @@ export type EdgeUpdateWithoutSourceNodeInput = {
 };
 export type EdgeUncheckedUpdateWithoutSourceNodeInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     targetNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeUncheckedUpdateManyWithoutSourceNodeInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     targetNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -645,7 +613,6 @@ export type EdgeUpdateWithoutTargetNodeInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     workflow?: Prisma.WorkflowUpdateOneRequiredWithoutEdgesNestedInput;
@@ -653,32 +620,29 @@ export type EdgeUpdateWithoutTargetNodeInput = {
 };
 export type EdgeUncheckedUpdateWithoutTargetNodeInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeUncheckedUpdateManyWithoutTargetNodeInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceNodeId?: Prisma.StringFieldUpdateOperationsInput | string;
     sourceHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     targetHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    meta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    workflowId?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EdgeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
-    workflowId?: boolean;
     sourceNodeId?: boolean;
     targetNodeId?: boolean;
     sourceHandle?: boolean;
     targetHandle?: boolean;
-    meta?: boolean;
+    workflowId?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
@@ -687,12 +651,11 @@ export type EdgeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 }, ExtArgs["result"]["edge"]>;
 export type EdgeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
-    workflowId?: boolean;
     sourceNodeId?: boolean;
     targetNodeId?: boolean;
     sourceHandle?: boolean;
     targetHandle?: boolean;
-    meta?: boolean;
+    workflowId?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
@@ -701,12 +664,11 @@ export type EdgeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 }, ExtArgs["result"]["edge"]>;
 export type EdgeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
-    workflowId?: boolean;
     sourceNodeId?: boolean;
     targetNodeId?: boolean;
     sourceHandle?: boolean;
     targetHandle?: boolean;
-    meta?: boolean;
+    workflowId?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
@@ -715,16 +677,15 @@ export type EdgeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 }, ExtArgs["result"]["edge"]>;
 export type EdgeSelectScalar = {
     id?: boolean;
-    workflowId?: boolean;
     sourceNodeId?: boolean;
     targetNodeId?: boolean;
     sourceHandle?: boolean;
     targetHandle?: boolean;
-    meta?: boolean;
+    workflowId?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type EdgeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "sourceNodeId" | "targetNodeId" | "sourceHandle" | "targetHandle" | "meta" | "createdAt" | "updatedAt", ExtArgs["result"]["edge"]>;
+export type EdgeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sourceNodeId" | "targetNodeId" | "sourceHandle" | "targetHandle" | "workflowId" | "createdAt" | "updatedAt", ExtArgs["result"]["edge"]>;
 export type EdgeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     workflow?: boolean | Prisma.WorkflowDefaultArgs<ExtArgs>;
     sourceNode?: boolean | Prisma.NodeDefaultArgs<ExtArgs>;
@@ -749,12 +710,11 @@ export type $EdgePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
-        workflowId: string;
         sourceNodeId: string;
         targetNodeId: string;
         sourceHandle: string | null;
         targetHandle: string | null;
-        meta: runtime.JsonValue | null;
+        workflowId: string;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["edge"]>;
@@ -818,12 +778,11 @@ export interface Prisma__EdgeClient<T, Null = never, ExtArgs extends runtime.Typ
 }
 export interface EdgeFieldRefs {
     readonly id: Prisma.FieldRef<"Edge", 'String'>;
-    readonly workflowId: Prisma.FieldRef<"Edge", 'String'>;
     readonly sourceNodeId: Prisma.FieldRef<"Edge", 'String'>;
     readonly targetNodeId: Prisma.FieldRef<"Edge", 'String'>;
     readonly sourceHandle: Prisma.FieldRef<"Edge", 'String'>;
     readonly targetHandle: Prisma.FieldRef<"Edge", 'String'>;
-    readonly meta: Prisma.FieldRef<"Edge", 'Json'>;
+    readonly workflowId: Prisma.FieldRef<"Edge", 'String'>;
     readonly createdAt: Prisma.FieldRef<"Edge", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Edge", 'DateTime'>;
 }

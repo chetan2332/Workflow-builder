@@ -111,23 +111,7 @@ export abstract class BaseNode {
    * Extract all fields from definition UI
    */
   protected extractFieldsFromDefinition(definition: NodeDefinition): ConfigField[] {
-    const fields: ConfigField[] = [];
-
-    const panels = [
-      definition.ui.leftPanel,
-      definition.ui.centerPanel,
-      definition.ui.rightPanel
-    ].filter(Boolean);
-
-    for (const panel of panels) {
-      if (!panel?.tabs) continue;
-
-      for (const tab of panel.tabs) {
-        fields.push(...tab.fields);
-      }
-    }
-
-    return fields;
+    return definition.config.fields;
   }
 
   /**

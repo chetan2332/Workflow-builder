@@ -1,27 +1,24 @@
-import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { EditorTopBar } from '../features/workflow-editor/EditorTopBar';
 import { NodeLibraryDrawer } from '../features/workflow-editor/NodeLibraryDrawer';
 import { Canvas } from '../features/workflow-editor/Canvas';
-import type { NodeDefinitionId } from '../nodeTemplates';
-import { NODE_DEFINITIONS_BY_ID } from '../nodeTemplates';
-import { NodeActionDialog } from '../features/workflow-editor/NodeActionDialog';
-import { NodePickerModal } from '../features/workflow-editor/NodePickerModal';
+import { NodeConfigDialog } from '../features/workflow-editor/dialog/NodeConfigDialog';
 import { getUnsatisfiedNodeIds } from '../features/workflow-editor/workflowValidation';
-import { useDummyNodes } from '../features/workflow-editor/useDummyNodes';
+import { useDummyNodes } from '../features/workflow-editor/nodes/useDummyNodes';
 import { useWorkflow, useUpdateWorkflow } from '../hooks/useWorkflow';
-import { backendToXYFlow, xyFlowToBackend } from '../utils/workflowTransform';
+import { backendToXYFlow, XYFlowToBackend } from '../utils/workflowTransform';
 import {
   useNodesState,
   useEdgesState,
   addEdge,
-  MarkerType,
   type Node,
   type Edge,
   type Connection,
 } from '@xyflow/react';
 import { nanoid } from 'nanoid';
-import type { WorkflowNodeData } from '../nodeConfigSchema';
+import type { WorkflowNode } from '@n8n-project/shared';
+import { useNodeDefinitions } from '../hooks/useNodeDefinitions';
 
 export function WorkflowEditorPage() {
   const { id } = useParams<{id: string}>();
@@ -31,8 +28,10 @@ export function WorkflowEditorPage() {
   const { data: workflow, isLoading, error } = useWorkflow(id);
   const updateMutation = useUpdateWorkflow(id);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node<WorkflowNodeData>>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node<WorkflowNode>>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const { definitionsById } = useNodeDefinitions();
 
   // Track if data has been initialized
   const isInitialized = useRef(false);
@@ -40,7 +39,7 @@ export function WorkflowEditorPage() {
   // Initialize from backend on load
   useEffect(() => {
     if (workflow && !isInitialized.current) {
-      const { nodes: backendNodes, edges: backendEdges } = backendToXYFlow(workflow);
+      const { nodes: backendNodes, edges: backendEdges } = backendToXYFlow(workflow, definitionsById);
       setNodes(backendNodes);
       setEdges(backendEdges);
       isInitialized.current = true;
@@ -49,6 +48,7 @@ export function WorkflowEditorPage() {
 
   // Auto-save logic using interval-based approach
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const lastSavedState = useRef<string>('');
 
   useEffect(() => {
@@ -56,34 +56,34 @@ export function WorkflowEditorPage() {
     setHasUnsavedChanges(currentState !== lastSavedState.current);
   }, [nodes, edges]);
 
-  useEffect(() => {
-    if (!id || !hasUnsavedChanges) return;
+  // useEffect(() => {
+  //   if (!id || !hasUnsavedChanges) return;
 
-    const interval = setInterval(async () => {
-      if (hasUnsavedChanges && nodes.length > 0) {
-        const payload = xyFlowToBackend(nodes, edges);
-        await updateMutation.mutateAsync({
-          nodes: payload.nodes,
-          edges: payload.edges,
-        });
-        lastSavedState.current = JSON.stringify({ nodes, edges });
-        setHasUnsavedChanges(false);
-      }
-    }, 3000); // 3 seconds
+  //   const interval = setInterval(async () => {
+  //     if (hasUnsavedChanges && nodes.length > 0) {
+  //       handleSave();
+  //     }
+  //   }, 3000); // 3 seconds
 
-    return () => clearInterval(interval);
-  }, [id, hasUnsavedChanges, nodes, edges, updateMutation]);
+  //   return () => clearInterval(interval);
+  // }, [hasUnsavedChanges, nodes, edges]);
 
   // Manual save
   const handleSave = async () => {
     if (!id) return;
-    const payload = xyFlowToBackend(nodes, edges);
-    await updateMutation.mutateAsync({
-      nodes: payload.nodes,
-      edges: payload.edges,
-    });
-    lastSavedState.current = JSON.stringify({ nodes, edges });
-    setHasUnsavedChanges(false);
+    try {
+      const payload = XYFlowToBackend(nodes, edges);
+      await updateMutation.mutateAsync({
+        nodes: payload.nodes,
+        edges: payload.edges,
+      });
+      lastSavedState.current = JSON.stringify({ nodes, edges });
+      setHasUnsavedChanges(false);
+    } catch (err: any) {
+      setSaveError(err.message || 'Error saving workflow');
+      // console.log error
+      console.error('Error saving workflow:', err);
+    }
   };
 
   // Warn before leaving with unsaved changes
@@ -102,27 +102,10 @@ export function WorkflowEditorPage() {
     console.log('Run workflow - TODO');
   };
 
-  // Dummy node state
-  const [nodePickerOpen, setNodePickerOpen] = useState(false);
-  const [selectedDummyInfo, setSelectedDummyInfo] = useState<{
-    dummyId: string;
-    sourceNodeId: string;
-    sourceHandleId: string;
-  } | null>(null);
-
-  // Handle dummy node click
-  const handleDummyNodeClick = useCallback((dummyId: string, data: WorkflowNodeData) => {
-    setSelectedDummyInfo({
-      dummyId,
-      sourceNodeId: data.sourceNodeId!,
-      sourceHandleId: data.sourceHandleId!,
-    });
-    setNodePickerOpen(true);
-  }, []);
-
-  // Generate dummy nodes and add their edges to state
-  const dummyNodes = useDummyNodes(nodes, edges, handleDummyNodeClick, setEdges);
+  // Generate dummy nodes and edges
+  const { dummyNodes, dummyEdges } = useDummyNodes(nodes, edges);
   const allNodes = useMemo(() => [...nodes, ...dummyNodes], [nodes, dummyNodes]);
+  const allEdges = useMemo(() => [...edges, ...dummyEdges], [edges, dummyEdges]);
 
   const onConnect = (connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
@@ -131,108 +114,36 @@ export function WorkflowEditorPage() {
   const [activeActionNodeId, setActiveActionNodeId] = useState<string | null>(null);
 
   const handleAddNodeAtPosition = (
-    definitionId: NodeDefinitionId,
+    definitionId: string,
     position: { x: number; y: number },
   ) => {
     const idStr = nanoid();
-    const definition = NODE_DEFINITIONS_BY_ID[definitionId];
-    const label = definition?.name ?? definitionId;
+    const definition = definitionsById[definitionId];
+    const label = definition.label;
 
     setNodes((nds) => [
       ...nds,
-      {
+      ({
         id: idStr,
-        type:
-          definition?.shape === 'oppositeD'
-            ? 'oppositeD'
-            : definition?.shape === 'roundedRectangle'
-            ? 'roundedRectangle'
-            : definition?.shape === 'rectangleWithText'
-            ? 'rectangleWithText'
-            : 'circle',
+        type: definition.shape,
         position,
-        data: {
-          label,
-          definitionId,
-          actionState: {},
-        },
-      },
+        data: ({
+          id: idStr,
+          type: definition.type,
+          version: definition.version,
+          category: definition.category,
+          positionX: position.x,
+          positionY: position.y,
+          config: definition.config,
+          label: label,
+          description: definition.description,
+          inputHandles: definition.inputHandles,
+          outputHandles: definition.outputHandles,
+          configHandles: definition.configHandles,
+        } as WorkflowNode),
+      } as Node<WorkflowNode>),
     ]);
   };
-
-  // Handle node selection from picker modal
-  const handleNodeSelected = useCallback(
-    (definitionId: string) => {
-      if (!selectedDummyInfo) return;
-
-      const { sourceNodeId, sourceHandleId } = selectedDummyInfo;
-
-      // Find the source node to calculate position
-      const sourceNode = nodes.find((n) => n.id === sourceNodeId);
-      if (!sourceNode) return;
-
-      // Calculate position to the right of source node
-      const position = {
-        x: sourceNode.position.x + 150,
-        y: sourceNode.position.y,
-      };
-
-      // Create new real node at calculated position
-      const newNodeId = nanoid();
-      const definition = NODE_DEFINITIONS_BY_ID[definitionId];
-
-      // Add new real node
-      setNodes((nds) => [
-        ...nds,
-        {
-          id: newNodeId,
-          type:
-            definition?.shape === 'oppositeD'
-              ? 'oppositeD'
-              : definition?.shape === 'roundedRectangle'
-              ? 'roundedRectangle'
-              : definition?.shape === 'rectangleWithText'
-              ? 'rectangleWithText'
-              : 'circle',
-          position,
-          data: {
-            label: definition?.name || definitionId,
-            definitionId,
-            actionState: {},
-          },
-        },
-      ]);
-
-      // Get first input handle ID
-      const newNodeHandles = definition?.handles || [];
-      const firstInputHandle = newNodeHandles.find((h) => h.kind === 'input');
-      const targetHandleId = firstInputHandle?.id || 'in';
-
-      // UPDATE EXISTING EDGE
-      setEdges((eds) => {
-        return eds.map((edge) => {
-          if (
-            edge.data?.isDummyEdge &&
-            edge.source === sourceNodeId &&
-            edge.sourceHandle === sourceHandleId
-          ) {
-            return {
-              ...edge,
-              target: newNodeId,
-              targetHandle: targetHandleId,
-              data: {},
-            };
-          }
-          return edge;
-        });
-      });
-
-      // Close modal
-      setNodePickerOpen(false);
-      setSelectedDummyInfo(null);
-    },
-    [selectedDummyInfo, nodes, setNodes, setEdges]
-  );
 
   const unsatisfiedNodeIds = useMemo(
     () => getUnsatisfiedNodeIds(nodes, edges),
@@ -242,10 +153,7 @@ export function WorkflowEditorPage() {
   const activeNode = activeActionNodeId
     ? nodes.find((n) => n.id === activeActionNodeId)
     : undefined;
-  const activeTemplate =
-    activeNode && (activeNode.data as WorkflowNodeData | undefined)?.definitionId
-      ? NODE_DEFINITIONS_BY_ID[(activeNode.data as WorkflowNodeData).definitionId]
-      : undefined;
+  const activeTemplate = activeNode?.data;
 
   // Show loading state
   if (isLoading) {
@@ -267,8 +175,7 @@ export function WorkflowEditorPage() {
   return (
     <div className="flex flex-col h-screen">
       <EditorTopBar
-        workflowId={id}
-        workflowName={workflow?.name}
+        workflowName={workflow?.name ?? 'Untitled Workflow'}
         status={workflow?.status || "DRAFT"}
         onSave={handleSave}
         onRun={handleRun}
@@ -293,10 +200,15 @@ export function WorkflowEditorPage() {
               Workflow validation: {unsatisfiedNodeIds.size} node(s) have missing connections (every input and output must be connected).
             </div>
           )}
+          {/* {saveError && (
+            <div className="shrink-0 px-4 py-1.5 bg-red-950/80 border-b border-red-700/50 text-red-200 text-xs">
+              {saveError}
+            </div>
+          )} */}
           <div className="flex-1 min-h-0">
           <Canvas
             nodes={allNodes}
-            edges={edges}
+            edges={allEdges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -308,40 +220,36 @@ export function WorkflowEditorPage() {
         </div>
       </div>
 
-      {activeNode && activeTemplate && activeTemplate.action && (
-        <NodeActionDialog
+      {/* Node Config Dialog */}
+      {activeNode && activeTemplate && (
+        <NodeConfigDialog
           key={activeNode.id}
-          template={activeTemplate}
-          node={activeNode}
+          nodeData={activeTemplate}
+          definition={definitionsById[activeTemplate.type]}
+          executionState={activeTemplate.state}
           isOpen={true}
           onClose={() => setActiveActionNodeId(null)}
-          onSubmit={(nextState) => {
+          onSave={(updates) => {
             setNodes((nds) =>
               nds.map((n) =>
                 n.id === activeNode.id
                   ? {
                       ...n,
                       data: {
-                        ...(n.data as WorkflowNodeData),
-                        actionState: nextState,
+                        ...(n.data as WorkflowNode),
+                        ...updates,
                       },
                     }
                   : n,
               ),
             );
           }}
+          onExecute={() => {
+            // TODO: Implement node execution
+            console.log('Execute node:', activeNode.id);
+          }}
         />
       )}
-
-      {/* Node Picker Modal */}
-      <NodePickerModal
-        isOpen={nodePickerOpen}
-        onClose={() => {
-          setNodePickerOpen(false);
-          setSelectedDummyInfo(null);
-        }}
-        onSelectNode={handleNodeSelected}
-      />
     </div>
   );
 }

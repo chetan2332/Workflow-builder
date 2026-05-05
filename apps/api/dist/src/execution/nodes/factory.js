@@ -95,20 +95,7 @@ class NodeFactory {
         }
     }
     static extractFieldsFromDefinition(definition) {
-        const fields = [];
-        const panels = [
-            definition.ui.leftPanel,
-            definition.ui.centerPanel,
-            definition.ui.rightPanel
-        ].filter(Boolean);
-        for (const panel of panels) {
-            if (!panel?.tabs)
-                continue;
-            for (const tab of panel.tabs) {
-                fields.push(...tab.fields);
-            }
-        }
-        return fields;
+        return definition.config.fields;
     }
     static createAll(workflowNodes) {
         const nodes = new Map();

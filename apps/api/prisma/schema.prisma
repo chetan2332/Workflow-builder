@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -14,60 +14,17 @@ datasource db {
   provider = "postgresql"
 }
 
-
 enum WorkflowStatus {
   DRAFT
   ACTIVE
   ARCHIVED
 }
 
-enum NodeType {
-  TRIGGER
-  CODE
-  CONDITION
-  OTHER
-}
-
-enum NodeShape {
-  CIRCLE
-  OPPOSITE_D
-  ROUNDED_RECTANGLE
-  RECTANGLE_WITH_TEXT
-}
-
-model NodeTemplate {
-  id          String   @id @default(cuid())
-
-  // Template identity
-  templateId  String   // "HTTP", "LLM", "IF", "SWITCH" - semantic ID
-  version     String   @default("1.0.0") // Version for breaking changes
-  name        String   // "HTTP Request", "LLM", "If/Else"
-  description String?
-
-  // Visual properties
-  nodeType    NodeType
-  shape       NodeShape
-
-  // Handle configuration (static definition)
-  handlesConfig Json   // Array of HandleConfig from JSON files
-
-  // Action configuration (fields definition)
-  actionConfig Json?   // NodeActionConfig from JSON files
-
-  // Dynamic handles support
-  dynamicHandles Json? // { inputs: boolean, outputs: boolean }
-
-  // Metadata
-  isActive    Boolean  @default(true)  // Can be deactivated
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  nodes       Node[]
-
-  @@unique([templateId, version]) // Allow multiple versions
-  @@index([templateId, isActive])
-  @@index([nodeType])
+enum NodeCategory {
+  Trigger
+  Code
+  Flow
+  Other
 }
 
 model Workflow {
@@ -81,27 +38,29 @@ model Workflow {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([status, updatedAt])
 }
 
 model Node {
-  id         String   @id  // Client-provided (nanoid) for stability
+  id         String   @id // Client-provided (nanoid)
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
-  // Template reference
-  templateId      String
-  templateVersion String  @default("1.0.0")
-  template        NodeTemplate @relation(fields: [templateId, templateVersion], references: [templateId, version])
+  // Fields matching WorkflowNode
+  type          String       // e.g., "trigger.start", "code.http", "flow.if"
+  version       Int          // Versioning support
+  category      NodeCategory // TRIGGER | CODE | FLOW
+  positionX     Float
+  positionY     Float
+  config        Json         // NodeConfig
+  label         String
+  description   String
 
-  // Instance-specific data
-  label       String?
-  positionX   Float
-  positionY   Float
-  actionState Json @default("{}")  // User configuration
+  // Handle arrays stored as JSON
+  inputHandles  Json  // Handle[]
+  outputHandles Json  // Handle[]
+  configHandles Json? // Handle[] | undefined
 
-  // optional back-relations to edges (nice to have)
+  // Back-relations to edges
   outgoingEdges Edge[] @relation("EdgeSource")
   incomingEdges Edge[] @relation("EdgeTarget")
 
@@ -109,31 +68,26 @@ model Node {
   updatedAt DateTime @updatedAt
 
   @@index([workflowId])
-  @@index([templateId, templateVersion])
 }
 
 model Edge {
-  id String @id  // Client-provided (nanoid) for stability
+  id String @id // Client-provided (nanoid)
 
-  workflowId String
-  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-
+  // Fields matching WorkflowEdge
   sourceNodeId String
   targetNodeId String
-
-  sourceNode Node @relation("EdgeSource", fields: [sourceNodeId], references: [id], onDelete: Cascade)
-  targetNode Node @relation("EdgeTarget", fields: [targetNodeId], references: [id], onDelete: Cascade)
-
   sourceHandle String?
   targetHandle String?
 
-  // extra metadata if needed later
-  meta Json?
+  // DB-only fields
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  sourceNode Node @relation("EdgeSource", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode Node @relation("EdgeTarget", fields: [targetNodeId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([workflowId])
-  @@index([sourceNodeId])
-  @@index([targetNodeId])
 }

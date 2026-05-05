@@ -1,4 +1,3 @@
-export type * from './models/NodeTemplate.js';
 export type * from './models/Workflow.js';
 export type * from './models/Node.js';
 export type * from './models/Edge.js';

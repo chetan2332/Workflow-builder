@@ -1,17 +1,17 @@
 import { WorkflowsService } from './workflows.service';
 import { CreateWorkflowDto } from './dto/create-workflow.dto';
-import { UpdateWorkflowDto } from './dto/save-workflow.dto';
+import { UpdateWorkflowDto } from './dto/update-workflow.dto';
 export declare class WorkflowsController {
     private readonly workflowsService;
     constructor(workflowsService: WorkflowsService);
     findAll(page?: string, limit?: string, status?: string): Promise<{
         workflows: {
+            status: import("../../generated/prisma/enums").WorkflowStatus;
             id: string;
             name: string;
             description: string | null;
             createdAt: Date;
             updatedAt: Date;
-            status: import("../../generated/prisma/enums").WorkflowStatus;
             _count: {
                 nodes: number;
                 edges: number;
@@ -21,30 +21,20 @@ export declare class WorkflowsController {
         page: number;
         pageSize: number;
     }>;
-    findOne(id: string): Promise<{
+    findOne(id: string): Promise<({
         nodes: {
-            template: {
-                id: string;
-                templateId: string;
-                version: string;
-                name: string;
-                description: string | null;
-                nodeType: import("../../generated/prisma/enums").NodeType;
-                shape: import("../../generated/prisma/enums").NodeShape;
-                handlesConfig: import("@prisma/client/runtime/client").JsonValue;
-                actionConfig: import("@prisma/client/runtime/client").JsonValue | null;
-                dynamicHandles: import("@prisma/client/runtime/client").JsonValue | null;
-                isActive: boolean;
-                createdAt: Date;
-                updatedAt: Date;
-            } | undefined;
             id: string;
-            templateId: string;
-            templateVersion: string;
-            label: string | null;
+            description: string;
+            type: string;
+            version: number;
+            category: import("../../generated/prisma/enums").NodeCategory;
             positionX: number;
             positionY: number;
-            actionState: import("@prisma/client/runtime/client").JsonValue;
+            config: import("@prisma/client/runtime/client").JsonValue;
+            label: string;
+            inputHandles: import("@prisma/client/runtime/client").JsonValue;
+            outputHandles: import("@prisma/client/runtime/client").JsonValue;
+            configHandles: import("@prisma/client/runtime/client").JsonValue;
         }[];
         edges: {
             id: string;
@@ -53,47 +43,38 @@ export declare class WorkflowsController {
             sourceHandle: string | null;
             targetHandle: string | null;
         }[];
+    } & {
+        status: import("../../generated/prisma/enums").WorkflowStatus;
         id: string;
         name: string;
         description: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").WorkflowStatus;
-    } | null>;
+    }) | null>;
     create(createWorkflowDto: CreateWorkflowDto): import("../../generated/prisma/models").Prisma__WorkflowClient<{
+        status: import("../../generated/prisma/enums").WorkflowStatus;
         id: string;
         name: string;
         description: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").WorkflowStatus;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    update(id: string, updateWorkflowDto: UpdateWorkflowDto): Promise<{
+    update(id: string, updateWorkflowDto: UpdateWorkflowDto): Promise<({
         nodes: {
-            template: {
-                id: string;
-                templateId: string;
-                version: string;
-                name: string;
-                description: string | null;
-                nodeType: import("../../generated/prisma/enums").NodeType;
-                shape: import("../../generated/prisma/enums").NodeShape;
-                handlesConfig: import("@prisma/client/runtime/client").JsonValue;
-                actionConfig: import("@prisma/client/runtime/client").JsonValue | null;
-                dynamicHandles: import("@prisma/client/runtime/client").JsonValue | null;
-                isActive: boolean;
-                createdAt: Date;
-                updatedAt: Date;
-            } | undefined;
             id: string;
-            templateId: string;
-            templateVersion: string;
-            label: string | null;
+            description: string;
+            type: string;
+            version: number;
+            category: import("../../generated/prisma/enums").NodeCategory;
             positionX: number;
             positionY: number;
-            actionState: import("@prisma/client/runtime/client").JsonValue;
+            config: import("@prisma/client/runtime/client").JsonValue;
+            label: string;
+            inputHandles: import("@prisma/client/runtime/client").JsonValue;
+            outputHandles: import("@prisma/client/runtime/client").JsonValue;
+            configHandles: import("@prisma/client/runtime/client").JsonValue;
         }[];
         edges: {
             id: string;
@@ -102,20 +83,21 @@ export declare class WorkflowsController {
             sourceHandle: string | null;
             targetHandle: string | null;
         }[];
+    } & {
+        status: import("../../generated/prisma/enums").WorkflowStatus;
         id: string;
         name: string;
         description: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").WorkflowStatus;
-    } | null>;
+    }) | null>;
     delete(id: string): import("../../generated/prisma/models").Prisma__WorkflowClient<{
+        status: import("../../generated/prisma/enums").WorkflowStatus;
         id: string;
         name: string;
         description: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("../../generated/prisma/enums").WorkflowStatus;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;

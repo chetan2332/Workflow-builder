@@ -157,7 +157,6 @@ export type ExcludeUnderscoreKeys<T extends string> = T extends `_${string}` ? n
 export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 export declare const ModelName: {
-    readonly NodeTemplate: "NodeTemplate";
     readonly Workflow: "Workflow";
     readonly Node: "Node";
     readonly Edge: "Edge";
@@ -173,84 +172,10 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "nodeTemplate" | "workflow" | "node" | "edge";
+        modelProps: "workflow" | "node" | "edge";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
-        NodeTemplate: {
-            payload: Prisma.$NodeTemplatePayload<ExtArgs>;
-            fields: Prisma.NodeTemplateFieldRefs;
-            operations: {
-                findUnique: {
-                    args: Prisma.NodeTemplateFindUniqueArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload> | null;
-                };
-                findUniqueOrThrow: {
-                    args: Prisma.NodeTemplateFindUniqueOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>;
-                };
-                findFirst: {
-                    args: Prisma.NodeTemplateFindFirstArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload> | null;
-                };
-                findFirstOrThrow: {
-                    args: Prisma.NodeTemplateFindFirstOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>;
-                };
-                findMany: {
-                    args: Prisma.NodeTemplateFindManyArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>[];
-                };
-                create: {
-                    args: Prisma.NodeTemplateCreateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>;
-                };
-                createMany: {
-                    args: Prisma.NodeTemplateCreateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                createManyAndReturn: {
-                    args: Prisma.NodeTemplateCreateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>[];
-                };
-                delete: {
-                    args: Prisma.NodeTemplateDeleteArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>;
-                };
-                update: {
-                    args: Prisma.NodeTemplateUpdateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>;
-                };
-                deleteMany: {
-                    args: Prisma.NodeTemplateDeleteManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateMany: {
-                    args: Prisma.NodeTemplateUpdateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateManyAndReturn: {
-                    args: Prisma.NodeTemplateUpdateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>[];
-                };
-                upsert: {
-                    args: Prisma.NodeTemplateUpsertArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NodeTemplatePayload>;
-                };
-                aggregate: {
-                    args: Prisma.NodeTemplateAggregateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.AggregateNodeTemplate>;
-                };
-                groupBy: {
-                    args: Prisma.NodeTemplateGroupByArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.NodeTemplateGroupByOutputType>[];
-                };
-                count: {
-                    args: Prisma.NodeTemplateCountArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.NodeTemplateCountAggregateOutputType> | number;
-                };
-            };
-        };
         Workflow: {
             payload: Prisma.$WorkflowPayload<ExtArgs>;
             fields: Prisma.WorkflowFieldRefs;
@@ -504,22 +429,6 @@ export declare const TransactionIsolationLevel: {
     readonly Serializable: "Serializable";
 };
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
-export declare const NodeTemplateScalarFieldEnum: {
-    readonly id: "id";
-    readonly templateId: "templateId";
-    readonly version: "version";
-    readonly name: "name";
-    readonly description: "description";
-    readonly nodeType: "nodeType";
-    readonly shape: "shape";
-    readonly handlesConfig: "handlesConfig";
-    readonly actionConfig: "actionConfig";
-    readonly dynamicHandles: "dynamicHandles";
-    readonly isActive: "isActive";
-    readonly createdAt: "createdAt";
-    readonly updatedAt: "updatedAt";
-};
-export type NodeTemplateScalarFieldEnum = (typeof NodeTemplateScalarFieldEnum)[keyof typeof NodeTemplateScalarFieldEnum];
 export declare const WorkflowScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
@@ -532,24 +441,28 @@ export type WorkflowScalarFieldEnum = (typeof WorkflowScalarFieldEnum)[keyof typ
 export declare const NodeScalarFieldEnum: {
     readonly id: "id";
     readonly workflowId: "workflowId";
-    readonly templateId: "templateId";
-    readonly templateVersion: "templateVersion";
-    readonly label: "label";
+    readonly type: "type";
+    readonly version: "version";
+    readonly category: "category";
     readonly positionX: "positionX";
     readonly positionY: "positionY";
-    readonly actionState: "actionState";
+    readonly config: "config";
+    readonly label: "label";
+    readonly description: "description";
+    readonly inputHandles: "inputHandles";
+    readonly outputHandles: "outputHandles";
+    readonly configHandles: "configHandles";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type NodeScalarFieldEnum = (typeof NodeScalarFieldEnum)[keyof typeof NodeScalarFieldEnum];
 export declare const EdgeScalarFieldEnum: {
     readonly id: "id";
-    readonly workflowId: "workflowId";
     readonly sourceNodeId: "sourceNodeId";
     readonly targetNodeId: "targetNodeId";
     readonly sourceHandle: "sourceHandle";
     readonly targetHandle: "targetHandle";
-    readonly meta: "meta";
+    readonly workflowId: "workflowId";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -573,34 +486,31 @@ export declare const QueryMode: {
     readonly insensitive: "insensitive";
 };
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode];
+export declare const NullsOrder: {
+    readonly first: "first";
+    readonly last: "last";
+};
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
 export declare const JsonNullValueFilter: {
     readonly DbNull: runtime.DbNullClass;
     readonly JsonNull: runtime.JsonNullClass;
     readonly AnyNull: runtime.AnyNullClass;
 };
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
-export declare const NullsOrder: {
-    readonly first: "first";
-    readonly last: "last";
-};
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>;
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>;
-export type EnumNodeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeType'>;
-export type ListEnumNodeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeType[]'>;
-export type EnumNodeShapeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeShape'>;
-export type ListEnumNodeShapeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeShape[]'>;
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>;
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
 export type EnumWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkflowStatus'>;
 export type ListEnumWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkflowStatus[]'>;
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>;
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
+export type EnumNodeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeCategory'>;
+export type ListEnumNodeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeCategory[]'>;
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 export type BatchPayload = {
     count: number;
 };
@@ -625,7 +535,6 @@ export type PrismaClientOptions = ({
     comments?: runtime.SqlCommenterPlugin[];
 };
 export type GlobalOmitConfig = {
-    nodeTemplate?: Prisma.NodeTemplateOmit;
     workflow?: Prisma.WorkflowOmit;
     node?: Prisma.NodeOmit;
     edge?: Prisma.EdgeOmit;

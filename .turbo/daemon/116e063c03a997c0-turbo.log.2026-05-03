@@ -1,2 +1,12 @@
 2026-05-03T07:34:35.633573Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
 2026-05-03T07:34:36.041768Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-05-03T14:56:29.238122Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-05-03T14:56:29.683815Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-05-03T21:29:23.986715Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-05-03T21:29:24.311244Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-05-03T21:30:49.049991Z  WARN get_package_file_hashes{include_default_files=true telemetry=None}: turborepo_scm::package_deps: git hashing failed for AnchoredSystemPath("packages\\shared") with resource error: Git error on C:\Users\I749303\coding\n8n\project\packages\shared\src\definitions\sedGfJTLc: could not find 'C:\Users\I749303\coding\n8n\project\packages\shared\src\definitions\sedGfJTLc' to open: The system cannot find the file specified.
+; class=Os (2); code=NotFound (-3)
+2026-05-03T21:30:49.330310Z  WARN get_package_file_hashes{include_default_files=true telemetry=None}: turborepo_scm::package_deps: git hashing failed for AnchoredSystemPath("packages\\shared") with resource error: Git error on C:\Users\I749303\coding\n8n\project\packages\shared\src\definitions\seddPQN08: could not find 'C:\Users\I749303\coding\n8n\project\packages\shared\src\definitions\seddPQN08' to open: The system cannot find the file specified.
+; class=Os (2); code=NotFound (-3)
+2026-05-03T21:30:49.470167Z  WARN get_package_file_hashes{include_default_files=true telemetry=None}: turborepo_scm::package_deps: git hashing failed for AnchoredSystemPath("packages\\shared") with resource error: Git error on C:\Users\I749303\coding\n8n\project\packages\shared\src\definitions\sedDBmVvV: could not find 'C:\Users\I749303\coding\n8n\project\packages\shared\src\definitions\sedDBmVvV' to open: The system cannot find the file specified.
+; class=Os (2); code=NotFound (-3)

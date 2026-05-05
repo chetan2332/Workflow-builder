@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { WorkflowsModule } from './workflows/workflows.module';
-import { TemplatesModule } from './templates/templates.module';
 import { ExecutionModule } from './execution/execution.module';
 import { ConfigModule } from '@nestjs/config';
 
@@ -13,7 +12,6 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     PrismaModule,
-    TemplatesModule,
     WorkflowsModule,
     ExecutionModule,
   ],

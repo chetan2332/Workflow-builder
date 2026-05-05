@@ -4,17 +4,10 @@ export declare const WorkflowStatus: {
     readonly ARCHIVED: "ARCHIVED";
 };
 export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus];
-export declare const NodeType: {
-    readonly TRIGGER: "TRIGGER";
-    readonly CODE: "CODE";
-    readonly CONDITION: "CONDITION";
-    readonly OTHER: "OTHER";
+export declare const NodeCategory: {
+    readonly Trigger: "Trigger";
+    readonly Code: "Code";
+    readonly Flow: "Flow";
+    readonly Other: "Other";
 };
-export type NodeType = (typeof NodeType)[keyof typeof NodeType];
-export declare const NodeShape: {
-    readonly CIRCLE: "CIRCLE";
-    readonly OPPOSITE_D: "OPPOSITE_D";
-    readonly ROUNDED_RECTANGLE: "ROUNDED_RECTANGLE";
-    readonly RECTANGLE_WITH_TEXT: "RECTANGLE_WITH_TEXT";
-};
-export type NodeShape = (typeof NodeShape)[keyof typeof NodeShape];
+export type NodeCategory = (typeof NodeCategory)[keyof typeof NodeCategory];

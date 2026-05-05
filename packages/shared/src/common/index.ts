@@ -1,5 +1,3 @@
-export * from './data-types.js';
-
 // Type system exports
 export type {
   DataType,

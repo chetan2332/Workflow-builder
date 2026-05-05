@@ -2,7 +2,7 @@ import type { FieldProps } from './types';
 import { CodeMirrorEditor } from './CodeMirrorEditor';
 
 export function CodeField({ field, value, onChange }: FieldProps) {
-  const stringValue = String(value ?? field.defaultValue ?? '');
+  const stringValue = String(value ?? field.default ?? '');
 
   // Always use javascript for now
   const language = 'javascript';

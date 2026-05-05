@@ -245,8 +245,17 @@ export type WorkflowScalarRelationFilter = {
     is?: Prisma.WorkflowWhereInput;
     isNot?: Prisma.WorkflowWhereInput;
 };
+export type StringFieldUpdateOperationsInput = {
+    set?: string;
+};
+export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null;
+};
 export type EnumWorkflowStatusFieldUpdateOperationsInput = {
     set?: $Enums.WorkflowStatus;
+};
+export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string;
 };
 export type WorkflowCreateNestedOneWithoutNodesInput = {
     create?: Prisma.XOR<Prisma.WorkflowCreateWithoutNodesInput, Prisma.WorkflowUncheckedCreateWithoutNodesInput>;
