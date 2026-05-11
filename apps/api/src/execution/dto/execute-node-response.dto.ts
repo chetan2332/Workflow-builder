@@ -8,7 +8,7 @@ export class ExecuteNodeResponseDto {
   /**
    * Execution success status
    */
-  success: boolean;
+  success!: boolean;
 
   /**
    * Node execution result (outputs + metadata)

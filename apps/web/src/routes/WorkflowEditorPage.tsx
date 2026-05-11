@@ -17,8 +17,9 @@ import {
   type Connection,
 } from '@xyflow/react';
 import { nanoid } from 'nanoid';
-import type { WorkflowNode } from '@n8n-project/shared';
+import type { WorkflowNode, NodeExecutionState } from '@n8n-project/shared';
 import { useNodeDefinitions } from '../hooks/useNodeDefinitions';
+import { useExecute } from '../hooks/useExecute';
 
 export function WorkflowEditorPage() {
   const { id } = useParams<{id: string}>();
@@ -32,6 +33,14 @@ export function WorkflowEditorPage() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const { definitionsById } = useNodeDefinitions();
+
+  const { executeNode } = useExecute((nodeId, state: NodeExecutionState) => {
+    setNodes((nds) =>
+      nds.map((n) =>
+        n.id === nodeId ? { ...n, data: { ...(n.data as WorkflowNode), state } } : n,
+      ),
+    );
+  });
 
   // Track if data has been initialized
   const isInitialized = useRef(false);
@@ -244,9 +253,14 @@ export function WorkflowEditorPage() {
               ),
             );
           }}
-          onExecute={() => {
-            // TODO: Implement node execution
-            console.log('Execute node:', activeNode.id);
+          onExecute={(configValues, inputData) => {
+            executeNode({
+              nodeId: activeNode.id,
+              type: activeTemplate.type,
+              version: activeTemplate.version,
+              config: configValues,
+              inputs: inputData,
+            });
           }}
         />
       )}

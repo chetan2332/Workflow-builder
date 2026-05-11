@@ -5,26 +5,26 @@ export class ExecuteNodeRequestDto {
   /**
    * Node ID (from workflow)
    */
-  nodeId: string;
+  nodeId!: string;
 
   /**
    * Node type (e.g., "code.http", "flow.if")
    */
-  type: string;
+  type!: string;
 
   /**
    * Node version
    */
-  version: number;
+  version!: number;
 
   /**
    * Node configuration
    */
-  config: any;
+  config!: any;
 
   /**
    * Input data for each input handle
    * Key: handleId, Value: array of input items
    */
-  inputs: Record<string, any[]>;
+  inputs!: Record<string, any[]>;
 }

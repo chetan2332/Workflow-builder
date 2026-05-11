@@ -11,7 +11,7 @@ interface NodeConfigDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (updates: Partial<WorkflowNode>) => void;
-  onExecute?: () => void;
+  onExecute?: (configValues: Record<string, any>, inputData: Record<string, any[]>) => void;
 }
 
 export function NodeConfigDialog({
@@ -30,6 +30,19 @@ export function NodeConfigDialog({
   const [outputHandles, setOutputHandles] = useState<Handle[]>(
     () => [...nodeData.outputHandles]
   );
+
+  // Config field values
+  const [configValues, setConfigValues] = useState<Record<string, any>>(() => {
+    // Initialize from nodeData.configValues or defaults from config.fields
+    const initial: Record<string, any> = {};
+    const existingValues = (nodeData as any).configValues ?? {};
+    const fields = nodeData.config?.fields ?? [];
+
+    for (const field of fields) {
+      initial[field.id] = existingValues[field.id] ?? field.default ?? null;
+    }
+    return initial;
+  });
 
   // Mock input data (will be replaced with actual data from parent nodes)
   const inputData = useMemo<Record<string, any[]>>(() => {
@@ -107,7 +120,8 @@ export function NodeConfigDialog({
     onSave({
       inputHandles,
       outputHandles,
-    });
+      configValues,
+    } as any);
     onClose();
   };
 
@@ -125,7 +139,7 @@ export function NodeConfigDialog({
             {onExecute && (
               <button
                 type="button"
-                onClick={onExecute}
+                onClick={() => onExecute(configValues, inputData)}
                 className="btn-primary px-4 py-1.5 text-xs"
               >
                 ▶ Execute Node
@@ -158,7 +172,11 @@ export function NodeConfigDialog({
             />
           )}
 
-          <ConfigPanel nodeData={nodeData} />
+          <ConfigPanel
+            nodeData={nodeData}
+            configValues={configValues}
+            onConfigChange={(id, value) => setConfigValues(prev => ({ ...prev, [id]: value }))}
+          />
           {/* only show outputPanel if outputHandles.length > 0 */}
           {outputHandles.length > 0 && (
             <OutputPanel

@@ -14,6 +14,7 @@ export interface GetNodesResponse {
  * Request body for POST /api/execution/node/:nodeId
  */
 export interface ExecuteNodeRequest {
+  nodeId: string;
   type: string;
   version: number;
   config: any;

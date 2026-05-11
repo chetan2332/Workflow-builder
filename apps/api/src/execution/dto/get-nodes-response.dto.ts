@@ -8,10 +8,10 @@ export class GetNodesResponseDto {
   /**
    * Array of all node definitions
    */
-  nodes: NodeDefinition[];
+  nodes!: NodeDefinition[];
 
   /**
    * Total count
    */
-  count: number;
+  count!: number;
 }
