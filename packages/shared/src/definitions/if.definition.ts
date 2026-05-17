@@ -45,5 +45,9 @@ export const ifDefinition: NodeDefinition = {
       tab: 'condition'
     }],
     tabs: ['condition']
+  },
+
+  defaultConfigValues: {
+    code: '',
   }
 };

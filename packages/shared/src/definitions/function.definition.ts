@@ -52,22 +52,12 @@ export const functionDefinition: NodeDefinition = {
   configSchema: {
     type: 'object',
     properties: [
-      { name: 'language', schema: { type: 'string', required: true } },
       { name: 'code', schema: { type: 'string', required: true } }
     ]
   },
 
   config: {
     fields: [
-      {
-        id: 'language',
-        type: 'select',
-        label: 'Language',
-        required: true,
-        default: 'javascript',
-        options: ['javascript', 'python'],
-        tab: 'code'
-      },
       {
         id: 'code',
         type: 'code',
@@ -79,5 +69,9 @@ export const functionDefinition: NodeDefinition = {
       }
     ],
     tabs: ['code']
+  },
+
+  defaultConfigValues: {
+    code: '',
   }
 };

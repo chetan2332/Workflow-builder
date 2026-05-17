@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import type { WorkflowNode } from '@n8n-project/shared';
+import type { NodeDefinition } from '@n8n-project/shared';
 import { getFieldComponent } from '../fields';
 
 interface ConfigPanelProps {
-  nodeData: WorkflowNode;
+  definition: NodeDefinition;
   configValues: Record<string, any>;
   onConfigChange: (id: string, value: any) => void;
 }
 
-export function ConfigPanel({ nodeData, configValues, onConfigChange }: ConfigPanelProps) {
-  const fields = nodeData.config?.fields ?? [];
-  const tabs = nodeData.config?.tabs;
+export function ConfigPanel({ definition, configValues, onConfigChange }: ConfigPanelProps) {
+  const fields = definition.config?.fields ?? [];
+  const tabs = definition.config?.tabs;
   const [activeTab, setActiveTab] = useState(tabs?.[0] ?? 'config');
 
   // Filter fields by active tab (if tabs exist)
@@ -26,7 +26,7 @@ export function ConfigPanel({ nodeData, configValues, onConfigChange }: ConfigPa
         <div className="flex flex-col items-center justify-center h-full text-center">
           <p className="text-sm text-slate-400">No configuration for this node</p>
           <div className="text-xs text-slate-500 mt-2">
-            <p>Type: {nodeData.type} v{nodeData.version}</p>
+            <p>Type: {definition.type} v{definition.version}</p>
           </div>
         </div>
       </div>

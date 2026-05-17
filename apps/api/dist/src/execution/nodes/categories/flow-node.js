@@ -6,33 +6,31 @@ class FlowNode extends base_node_1.BaseNode {
     async execute(ctx) {
         ctx.tracker.log(`Executing ${ctx.definition.label}`, 'info');
         this.validateInputHandles(ctx);
-        const outputs = this.route(ctx.inputs, ctx.config);
-        const totalItems = Object.values(outputs)
-            .reduce((sum, arr) => sum + arr.length, 0);
-        ctx.tracker.log(`${ctx.definition.label} routed to ${Object.keys(outputs).length} output(s)`, 'info');
+        const items = ctx.inputs['in'] ?? [];
+        const outputs = {};
+        for (const item of items) {
+            const itemOutputs = this.route(item, ctx.config);
+            for (const [handleId, data] of Object.entries(itemOutputs)) {
+                if (!outputs[handleId])
+                    outputs[handleId] = [];
+                outputs[handleId].push(...data);
+            }
+        }
+        ctx.tracker.log(`${ctx.definition.label} routed ${items.length} item(s) to ${Object.keys(outputs).length} output(s)`, 'info');
         return {
             outputs,
-            metadata: {
-                itemsProcessed: totalItems
-            }
+            metadata: { itemsProcessed: items.length }
         };
     }
     evaluateCondition(code, input) {
+        if (!code || !code.trim())
+            return false;
         try {
             const fn = new Function('input', `return (${code});`);
             return fn(input) === true;
         }
         catch (error) {
             throw new Error(`Condition evaluation failed: ${error.message}`);
-        }
-    }
-    evaluateExpression(code, input) {
-        try {
-            const fn = new Function('input', `return (${code});`);
-            return fn(input);
-        }
-        catch (error) {
-            throw new Error(`Expression evaluation failed: ${error.message}`);
         }
     }
 }

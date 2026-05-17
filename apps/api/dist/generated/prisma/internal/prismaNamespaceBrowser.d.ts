@@ -40,7 +40,7 @@ export declare const NodeScalarFieldEnum: {
     readonly category: "category";
     readonly positionX: "positionX";
     readonly positionY: "positionY";
-    readonly config: "config";
+    readonly configValues: "configValues";
     readonly label: "label";
     readonly description: "description";
     readonly inputHandles: "inputHandles";

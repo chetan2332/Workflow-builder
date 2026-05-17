@@ -52,7 +52,7 @@ export function XYFlowToBackend(
       category: node.data.category,
       positionX: node.position.x,
       positionY: node.position.y,
-      config: node.data.config,
+      configValues: node.data.configValues,
       label: node.data.label,
       description: node.data.description,
       inputHandles: node.data.inputHandles,

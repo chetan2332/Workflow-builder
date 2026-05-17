@@ -20,6 +20,7 @@ import { KeyValueField } from './KeyValueField';
 import { FileField } from './FileField';
 import { CredentialRefField } from './CredentialRefField';
 import { InputField } from './InputField';
+import { CasesField } from './CasesField';
 
 type FieldComponent = React.ComponentType<FieldProps>;
 
@@ -39,6 +40,7 @@ export const FIELD_COMPONENTS: Record<ConfigField['type'], FieldComponent> = {
   file: FileField,
   credentialRef: CredentialRefField,
   input: InputField,
+  cases: CasesField,
 };
 
 /**

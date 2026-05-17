@@ -5,71 +5,51 @@ import { BaseNode, ExecutionContext, NodeOutput } from '../base/base-node';
  *
  * Behavior:
  * - Data routing only - no external execution
- * - Synchronous (no async operations)
- * - Type preservation (outputs derive from inputs)
- * - Subclasses implement route() method
+ * - Processes each item in inputs.in independently
+ * - Subclasses implement route() per item
  */
 export abstract class FlowNode extends BaseNode {
   async execute(ctx: ExecutionContext): Promise<NodeOutput> {
-    // Use definition for logging
     ctx.tracker.log(`Executing ${ctx.definition.label}`, 'info');
 
-    // Validate input handles
     this.validateInputHandles(ctx);
 
-    // FLOW nodes are synchronous routing (no async operations)
-    const outputs = this.route(ctx.inputs, ctx.config);
+    const items: any[] = ctx.inputs['in'] ?? [];
+    const outputs: Record<string, any[]> = {};
 
-    // Count items routed
-    const totalItems = Object.values(outputs)
-      .reduce((sum, arr) => sum + arr.length, 0);
+    for (const item of items) {
+      const itemOutputs = this.route(item, ctx.config);
 
-    ctx.tracker.log(`${ctx.definition.label} routed to ${Object.keys(outputs).length} output(s)`, 'info');
+      for (const [handleId, data] of Object.entries(itemOutputs)) {
+        if (!outputs[handleId]) outputs[handleId] = [];
+        outputs[handleId].push(...data);
+      }
+    }
+
+    ctx.tracker.log(
+      `${ctx.definition.label} routed ${items.length} item(s) to ${Object.keys(outputs).length} output(s)`,
+      'info'
+    );
 
     return {
       outputs,
-      metadata: {
-        itemsProcessed: totalItems
-      }
+      metadata: { itemsProcessed: items.length }
     };
   }
 
   /**
-   * Subclasses implement ONLY routing logic
-   * No validation, no error handling - just pure data routing
-   *
-   * @param inputs - Data from all input handles
-   * @param config - Node configuration
-   * @returns Data for each output handle
+   * Subclasses implement routing logic for a single input item.
+   * Return a map of handleId → array of items to route there.
    */
-  protected abstract route(
-    inputs: Record<string, any[]>,
-    config: any
-  ): Record<string, any[]>;
+  protected abstract route(item: any, config: any): Record<string, any[]>;
 
-  /**
-   * Helper: Evaluate JavaScript condition
-   * Available to all FLOW nodes
-   */
   protected evaluateCondition(code: string, input: any): boolean {
+    if (!code || !code.trim()) return false;
     try {
       const fn = new Function('input', `return (${code});`);
       return fn(input) === true;
     } catch (error: any) {
       throw new Error(`Condition evaluation failed: ${error.message}`);
-    }
-  }
-
-  /**
-   * Helper: Evaluate JavaScript expression
-   * Available to all FLOW nodes
-   */
-  protected evaluateExpression(code: string, input: any): any {
-    try {
-      const fn = new Function('input', `return (${code});`);
-      return fn(input);
-    } catch (error: any) {
-      throw new Error(`Expression evaluation failed: ${error.message}`);
     }
   }
 }

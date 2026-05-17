@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { MarkerType, type Node, type Edge } from '@xyflow/react';
-import type { WorkflowNode } from '@n8n-project/shared';
+import { NodeCategory, type WorkflowNode } from '@n8n-project/shared';
 
 function calculateDummyPosition(node: Node<WorkflowNode>, index: number) {
   return {
@@ -46,10 +46,10 @@ export function useDummyNodes(
                 id: dummyId,
                 type: 'dummy',
                 version: 1,
-                category: 'FLOW' as const,
+                category: NodeCategory.FLOW,
                 positionX: position.x,
                 positionY: position.y,
-                config: { fields: [] },
+                configValues: {},
                 label: '',
                 description: 'Placeholder node',
                 inputHandles: [{

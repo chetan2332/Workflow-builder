@@ -446,7 +446,7 @@ export declare const NodeScalarFieldEnum: {
     readonly category: "category";
     readonly positionX: "positionX";
     readonly positionY: "positionY";
-    readonly config: "config";
+    readonly configValues: "configValues";
     readonly label: "label";
     readonly description: "description";
     readonly inputHandles: "inputHandles";
@@ -505,8 +505,6 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
-export type EnumNodeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeCategory'>;
-export type ListEnumNodeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NodeCategory[]'>;
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;

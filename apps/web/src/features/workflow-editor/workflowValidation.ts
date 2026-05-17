@@ -114,10 +114,40 @@ export function isValidConnection(
   if (sourceHandle.type !== 'output' || targetHandle.type !== 'input')
     return false;
 
-  const targetInputAlreadyConnected = edges.some(
-    (e) => e.target === connection.target && e.targetHandle === connection.targetHandle,
-  );
-  if (targetInputAlreadyConnected) return false;
+  // Prevent cycles: using DFS to check if target can reach source
+
+  // map for adgacency list
+  const adjacencyList = new Map<string, string[]>();
+  for (const edge of edges) {
+    if (!adjacencyList.has(edge.source)) {
+      adjacencyList.set(edge.source, []);
+    }
+    adjacencyList.get(edge.source)!.push(edge.target);
+  }
+
+  // check if connection already exists
+  if (adjacencyList.get(connection.source)?.includes(connection.target)) {
+    return false; // Connection already exists
+  }
+
+  const visited = new Set<string>();
+  const dfs = (nodeId: string): boolean => {
+    if (nodeId === connection.source) return true; // Cycle detected
+    if (visited.has(nodeId)) return false;
+
+    visited.add(nodeId);
+    
+    const neighbors = adjacencyList.get(nodeId) || [];
+    for (const neighbor of neighbors) {
+      if (dfs(neighbor)) return true;
+    }
+
+    return false;
+  }
+
+  if (dfs(connection.target)) {
+    return false; // Cycle detected
+  }
 
   // Type compatibility check:
   if (!canConnect(sourceHandle.schema, targetHandle.schema)) {

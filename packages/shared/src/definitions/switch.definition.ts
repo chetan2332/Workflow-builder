@@ -31,33 +31,27 @@ export const switchDefinition: NodeDefinition = {
   configSchema: {
     type: 'object',
     properties: [
-      { name: 'code', schema: { type: 'string', required: true } },
-      { name: 'outputHandleCount', schema: { type: 'number', required: true } },
-      { name: 'outputLabels', schema: { type: 'array', required: false } },
-      { name: 'enableDefault', schema: { type: 'boolean', required: false } }
+      { name: 'cases', schema: { type: 'array', required: true } }
     ]
   },
 
   config: {
     fields: [
       {
-        id: 'code',
-        type: 'code',
-        label: 'Switch Expression',
+        id: 'cases',
+        type: 'cases',
+        label: 'Cases',
         required: true,
-        language: 'javascript',
-        placeholder: 'input.status',
-        tab: 'switch'
-      },
-      {
-        id: 'enableDefault',
-        type: 'boolean',
-        label: 'Enable Default Case',
-        required: false,
-        default: true,
         tab: 'switch'
       }
     ],
     tabs: ['switch']
+  },
+
+  defaultConfigValues: {
+    cases: [
+      { label: '', condition: '' },
+      { label: '', condition: '' },
+    ],
   }
 };

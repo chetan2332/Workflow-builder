@@ -57,7 +57,6 @@ export function WorkflowEditorPage() {
 
   // Auto-save logic using interval-based approach
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const lastSavedState = useRef<string>('');
 
   useEffect(() => {
@@ -89,8 +88,6 @@ export function WorkflowEditorPage() {
       lastSavedState.current = JSON.stringify({ nodes, edges });
       setHasUnsavedChanges(false);
     } catch (err: any) {
-      setSaveError(err.message || 'Error saving workflow');
-      // console.log error
       console.error('Error saving workflow:', err);
     }
   };
@@ -108,7 +105,7 @@ export function WorkflowEditorPage() {
   }, [hasUnsavedChanges]);
 
   const handleRun = () => {
-    console.log('Run workflow - TODO');
+    // TODO: implement run logic, e.g. call backend API to execute workflow
   };
 
   // Generate dummy nodes and edges
@@ -143,7 +140,7 @@ export function WorkflowEditorPage() {
           category: definition.category,
           positionX: position.x,
           positionY: position.y,
-          config: definition.config,
+          configValues: definition.defaultConfigValues,
           label: label,
           description: definition.description,
           inputHandles: definition.inputHandles,
@@ -238,27 +235,24 @@ export function WorkflowEditorPage() {
           executionState={activeTemplate.state}
           isOpen={true}
           onClose={() => setActiveActionNodeId(null)}
-          onSave={(updates) => {
+          onSave={(configValues, outputHandles, inputHandles) => {
             setNodes((nds) =>
               nds.map((n) =>
                 n.id === activeNode.id
-                  ? {
-                      ...n,
-                      data: {
-                        ...(n.data as WorkflowNode),
-                        ...updates,
-                      },
-                    }
+                  ? { ...n, data: { ...(n.data as WorkflowNode), configValues, outputHandles, inputHandles } }
                   : n,
               ),
             );
           }}
           onExecute={(configValues, inputData) => {
+            const cleanConfig = Object.fromEntries(
+              Object.entries(configValues).filter(([, v]) => v !== null && v !== undefined)
+            );
             executeNode({
               nodeId: activeNode.id,
               type: activeTemplate.type,
               version: activeTemplate.version,
-              config: configValues,
+              config: cleanConfig,
               inputs: inputData,
             });
           }}

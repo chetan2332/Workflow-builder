@@ -1,4 +1,4 @@
-import type { Handle, NodeConfig, NodeCategory } from '../definitions/types';
+import type { Handle, NodeCategory } from '../definitions/types';
 
 /**
  * Workflow status enum
@@ -20,7 +20,7 @@ export interface WorkflowNode {
   category: NodeCategory;
   positionX: number;
   positionY: number;
-  config: NodeConfig;
+  configValues: Record<string, any>;
   label: string;
   description: string;
   inputHandles: Handle[];
@@ -81,7 +81,7 @@ export interface UpdateWorkflowNode {
   id: string;
   positionX: number;
   positionY: number;
-  config: NodeConfig;
+  configValues: Record<string, any>;
   label: string;
   description: string;
   inputHandles: Handle[];

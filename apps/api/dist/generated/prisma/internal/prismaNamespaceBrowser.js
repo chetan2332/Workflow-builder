@@ -71,7 +71,7 @@ exports.NodeScalarFieldEnum = {
     category: 'category',
     positionX: 'positionX',
     positionY: 'positionY',
-    config: 'config',
+    configValues: 'configValues',
     label: 'label',
     description: 'description',
     inputHandles: 'inputHandles',

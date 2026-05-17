@@ -9,6 +9,7 @@ export { JsonField } from './JsonField';
 export { KeyValueField } from './KeyValueField';
 export { FileField } from './FileField';
 export { CredentialRefField } from './CredentialRefField';
+export { CasesField } from './CasesField';
 
 // Field component map
 export { FIELD_COMPONENTS, getFieldComponent } from './fieldComponentMap';

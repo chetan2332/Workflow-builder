@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Handle, NodeDefinition, NodeExecutionState, WorkflowNode } from '@n8n-project/shared';
 import { InputPanel } from './InputPanel';
 import { ConfigPanel } from './ConfigPanel';
@@ -10,7 +10,7 @@ interface NodeConfigDialogProps {
   executionState?: NodeExecutionState;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updates: Partial<WorkflowNode>) => void;
+  onSave: (configValues: Record<string, any>, outputHandles: Handle[], inputHandles: Handle[]) => void;
   onExecute?: (configValues: Record<string, any>, inputData: Record<string, any[]>) => void;
 }
 
@@ -33,13 +33,12 @@ export function NodeConfigDialog({
 
   // Config field values
   const [configValues, setConfigValues] = useState<Record<string, any>>(() => {
-    // Initialize from nodeData.configValues or defaults from config.fields
-    const initial: Record<string, any> = {};
-    const existingValues = (nodeData as any).configValues ?? {};
-    const fields = nodeData.config?.fields ?? [];
+    const existingValues = nodeData.configValues ?? {};
+    const fields = definition.config?.fields ?? [];
 
+    const initial: Record<string, any> = {};
     for (const field of fields) {
-      initial[field.id] = existingValues[field.id] ?? field.default ?? null;
+      initial[field.id] = existingValues[field.id];
     }
     return initial;
   });
@@ -67,7 +66,27 @@ export function NodeConfigDialog({
   }, [inputHandles]);
 
   const dynamicInputs = definition.dynamicHandles?.inputs ?? false;
-  const dynamicOutputs = definition.dynamicHandles?.outputs ?? false;
+
+  // Sync output handles whenever a 'cases'-type field changes
+  const casesField = definition.config?.fields?.find(f => f.type === 'cases');
+  useEffect(() => {
+    if (!casesField) return;
+    const items: Array<{ label: string; condition: string }> = configValues[casesField.id] ?? [];
+
+    const caseHandles: Handle[] = items.map((item, i) => ({
+      id: `case-${i}`,
+      label: item.label || `Case ${i + 1}`,
+      type: 'output' as const,
+      schema: { type: 'any' },
+      fixed: false,
+      schemaEditable: true,
+    }));
+
+    // Keep fixed handles from definition (e.g. SWITCH's 'default')
+    const fixedHandles = definition.outputHandles.filter(h => h.fixed);
+    setOutputHandles([...caseHandles, ...fixedHandles]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configValues[casesField?.id ?? '']]);
 
   if (!isOpen) return null;
 
@@ -96,33 +115,8 @@ export function NodeConfigDialog({
     setInputHandles(prev => [...prev, newHandle]);
   };
 
-  const handleAddOutputHandle = () => {
-    const newHandle: Handle = {
-      id: `out-${outputHandles.length + 1}`,
-      label: `Output ${outputHandles.length + 1}`,
-      type: 'output',
-      schema: { type: 'any' },
-      fixed: false,
-      schemaEditable: true,
-    };
-    setOutputHandles(prev => [...prev, newHandle]);
-  };
-
   const handleRemoveInputHandle = (id: string) => {
     setInputHandles(prev => prev.filter(h => h.id !== id));
-  };
-
-  const handleRemoveOutputHandle = (id: string) => {
-    setOutputHandles(prev => prev.filter(h => h.id !== id));
-  };
-
-  const handleSave = () => {
-    onSave({
-      inputHandles,
-      outputHandles,
-      configValues,
-    } as any);
-    onClose();
   };
 
   return (
@@ -173,7 +167,7 @@ export function NodeConfigDialog({
           )}
 
           <ConfigPanel
-            nodeData={nodeData}
+            definition={definition}
             configValues={configValues}
             onConfigChange={(id, value) => setConfigValues(prev => ({ ...prev, [id]: value }))}
           />
@@ -182,10 +176,7 @@ export function NodeConfigDialog({
             <OutputPanel
               handles={outputHandles}
               executionState={executionState}
-              dynamicHandles={dynamicOutputs}
               onUpdateHandle={handleUpdateOutputHandle}
-              onAddHandle={handleAddOutputHandle}
-              onRemoveHandle={handleRemoveOutputHandle}
             />
           )}
 
@@ -195,14 +186,7 @@ export function NodeConfigDialog({
         <div className="flex justify-end gap-2 mt-3">
           <button
             type="button"
-            className="btn px-3 py-1 text-xs border border-slate-700"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
+            onClick={() => { onSave(configValues, outputHandles, inputHandles); onClose(); }}
             className="btn-primary px-4 py-1.5 text-xs"
           >
             Save

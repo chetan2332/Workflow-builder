@@ -20,13 +20,6 @@ enum WorkflowStatus {
   ARCHIVED
 }
 
-enum NodeCategory {
-  Trigger
-  Code
-  Flow
-  Other
-}
-
 model Workflow {
   id          String         @id @default(cuid())
   name        String
@@ -48,10 +41,10 @@ model Node {
   // Fields matching WorkflowNode
   type          String       // e.g., "trigger.start", "code.http", "flow.if"
   version       Int          // Versioning support
-  category      NodeCategory // TRIGGER | CODE | FLOW
+  category      String
   positionX     Float
   positionY     Float
-  config        Json         // NodeConfig
+  configValues  Json         // Record<string, any>
   label         String
   description   String
 

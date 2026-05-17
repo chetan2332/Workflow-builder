@@ -54,9 +54,8 @@ export const httpDefinition: NodeDefinition = {
     properties: [
       { name: 'method', schema: { type: 'string', required: true } },
       { name: 'url', schema: { type: 'string', required: true } },
-      { name: 'headers', schema: { type: 'object', required: false } },
-      { name: 'body', schema: { type: 'any', required: false } },
-      { name: 'outputParser', schema: { type: 'string', required: false } }
+      { name: 'headers', schema: { type: 'array', required: false } },
+      { name: 'body', schema: { type: 'any', required: false } }
     ]
   },
 
@@ -79,8 +78,30 @@ export const httpDefinition: NodeDefinition = {
         placeholder: 'https://api.example.com/endpoint',
         supportsInterpolation: true,
         tab: 'request'
+      },
+      {
+        id: 'headers',
+        type: 'keyValue',
+        label: 'Headers',
+        required: false,
+        tab: 'request'
+      },
+      {
+        id: 'body',
+        type: 'json',
+        label: 'Request Body',
+        required: false,
+        showWhen: "config.method === 'POST' || config.method === 'PUT' || config.method === 'PATCH'",
+        tab: 'request'
       }
     ],
     tabs: ['request']
+  },
+
+  defaultConfigValues: {
+    method: 'GET',
+    url: '',
+    headers: [],
+    body: {},
   }
 };

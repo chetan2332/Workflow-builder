@@ -30,13 +30,27 @@ export const conditionDefinition: NodeDefinition = {
   configSchema: {
     type: 'object',
     properties: [
-      { name: 'outputHandleCount', schema: { type: 'number', required: true } },
       { name: 'conditions', schema: { type: 'array', required: true } }
     ]
   },
 
   config: {
-    fields: [],
+    fields: [
+      {
+        id: 'conditions',
+        type: 'cases',
+        label: 'Conditions',
+        required: true,
+        tab: 'conditions'
+      }
+    ],
     tabs: ['conditions']
+  },
+
+  defaultConfigValues: {
+    conditions: [
+      { label: '', condition: '' },
+      { label: '', condition: '' },
+    ],
   }
 };

@@ -46,7 +46,8 @@ export type ConfigFieldType =
   | 'keyValue'
   | 'file'
   | 'credentialRef'
-  | 'input';
+  | 'input'
+  | 'cases'; // Dynamic list of { label, condition } items — used by SWITCH and CONDITION
 
 // Configuration field for node UI
 export type ConfigField = {
@@ -121,4 +122,5 @@ export type NodeDefinition = {
 
   configSchema: TypeSchema;  // Validates entire config object
   config: NodeConfig;
+  defaultConfigValues: Record<string, any>;
 };

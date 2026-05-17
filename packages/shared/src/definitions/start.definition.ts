@@ -50,5 +50,9 @@ export const startDefinition: NodeDefinition = {
         description: 'Define the input data and schema for this workflow'
       }
     ]
+  },
+
+  defaultConfigValues: {
+    input: {},
   }
 };

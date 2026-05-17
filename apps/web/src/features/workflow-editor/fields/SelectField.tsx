@@ -19,11 +19,16 @@ export function SelectField({ field, value, onChange }: FieldProps) {
         className="input"
       >
         <option value="">Select...</option>
-        {field.options?.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
+        {Array.isArray(field.options) &&
+          field.options.map((opt) => {
+            const value = typeof opt === 'string' ? opt : opt.value;
+            const label = typeof opt === 'string' ? opt : opt.label;
+            return (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            );
+          })}
       </select>
       {field.description && (
         <p className="text-xs text-slate-400">{field.description}</p>

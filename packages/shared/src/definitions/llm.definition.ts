@@ -101,5 +101,13 @@ export const llmDefinition: NodeDefinition = {
       }
     ],
     tabs: ['model', 'prompt']
+  },
+
+  defaultConfigValues: {
+    provider: 'openai',
+    modelId: '',
+    systemPrompt: '',
+    userPrompt: '',
+    temperature: 0.7,
   }
 };

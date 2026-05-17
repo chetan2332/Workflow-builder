@@ -115,12 +115,6 @@ export type IntFilter<$PrismaModel = never> = {
     gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
     not?: Prisma.NestedIntFilter<$PrismaModel> | number;
 };
-export type EnumNodeCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.NodeCategory | Prisma.EnumNodeCategoryFieldRefInput<$PrismaModel>;
-    in?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    notIn?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    not?: Prisma.NestedEnumNodeCategoryFilter<$PrismaModel> | $Enums.NodeCategory;
-};
 export type FloatFilter<$PrismaModel = never> = {
     equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
     in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
@@ -179,15 +173,6 @@ export type IntWithAggregatesFilter<$PrismaModel = never> = {
     _sum?: Prisma.NestedIntFilter<$PrismaModel>;
     _min?: Prisma.NestedIntFilter<$PrismaModel>;
     _max?: Prisma.NestedIntFilter<$PrismaModel>;
-};
-export type EnumNodeCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.NodeCategory | Prisma.EnumNodeCategoryFieldRefInput<$PrismaModel>;
-    in?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    notIn?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    not?: Prisma.NestedEnumNodeCategoryWithAggregatesFilter<$PrismaModel> | $Enums.NodeCategory;
-    _count?: Prisma.NestedIntFilter<$PrismaModel>;
-    _min?: Prisma.NestedEnumNodeCategoryFilter<$PrismaModel>;
-    _max?: Prisma.NestedEnumNodeCategoryFilter<$PrismaModel>;
 };
 export type FloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
@@ -360,12 +345,6 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     _min?: Prisma.NestedDateTimeFilter<$PrismaModel>;
     _max?: Prisma.NestedDateTimeFilter<$PrismaModel>;
 };
-export type NestedEnumNodeCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.NodeCategory | Prisma.EnumNodeCategoryFieldRefInput<$PrismaModel>;
-    in?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    notIn?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    not?: Prisma.NestedEnumNodeCategoryFilter<$PrismaModel> | $Enums.NodeCategory;
-};
 export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
     in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
@@ -390,15 +369,6 @@ export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     _sum?: Prisma.NestedIntFilter<$PrismaModel>;
     _min?: Prisma.NestedIntFilter<$PrismaModel>;
     _max?: Prisma.NestedIntFilter<$PrismaModel>;
-};
-export type NestedEnumNodeCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.NodeCategory | Prisma.EnumNodeCategoryFieldRefInput<$PrismaModel>;
-    in?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    notIn?: $Enums.NodeCategory[] | Prisma.ListEnumNodeCategoryFieldRefInput<$PrismaModel>;
-    not?: Prisma.NestedEnumNodeCategoryWithAggregatesFilter<$PrismaModel> | $Enums.NodeCategory;
-    _count?: Prisma.NestedIntFilter<$PrismaModel>;
-    _min?: Prisma.NestedEnumNodeCategoryFilter<$PrismaModel>;
-    _max?: Prisma.NestedEnumNodeCategoryFilter<$PrismaModel>;
 };
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;

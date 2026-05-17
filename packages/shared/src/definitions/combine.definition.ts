@@ -31,8 +31,7 @@ export const combineDefinition: NodeDefinition = {
     type: 'object',
     properties: [
       { name: 'strategy', schema: { type: 'string', required: true } },
-      { name: 'customCode', schema: { type: 'string', required: false } },
-      { name: 'waitForAll', schema: { type: 'boolean', required: false } }
+      { name: 'customCode', schema: { type: 'string', required: false } }
     ]
   },
 
@@ -56,16 +55,13 @@ export const combineDefinition: NodeDefinition = {
         showWhen: "strategy === 'custom'",
         placeholder: '// Access inputs as: inputs.in1, inputs.in2\nreturn { combined: { ...inputs.in1, ...inputs.in2 } };',
         tab: 'combine'
-      },
-      {
-        id: 'waitForAll',
-        type: 'boolean',
-        label: 'Wait for All Inputs',
-        required: false,
-        default: true,
-        tab: 'combine'
       }
     ],
     tabs: ['combine']
+  },
+
+  defaultConfigValues: {
+    strategy: 'mergeObjects',
+    customCode: '',
   }
 };

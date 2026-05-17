@@ -5,19 +5,13 @@ import { SchemaBuilder } from './SchemaBuilder';
 interface OutputPanelProps {
   handles: Handle[];
   executionState?: NodeExecutionState;
-  dynamicHandles: boolean;
   onUpdateHandle: (handle: Handle) => void;
-  onAddHandle: () => void;
-  onRemoveHandle: (id: string) => void;
 }
 
 export function OutputPanel({
   handles,
   executionState,
-  dynamicHandles,
   onUpdateHandle,
-  onAddHandle,
-  onRemoveHandle,
 }: OutputPanelProps) {
   const handleInferSchema = (handle: Handle) => {
     const data = executionState?.outputData?.[handle.id];
@@ -73,15 +67,6 @@ export function OutputPanel({
                       {handle.schema?.type || 'any'}
                     </span>
                   </div>
-                  {!handle.fixed && dynamicHandles && (
-                    <button
-                      type="button"
-                      onClick={() => onRemoveHandle(handle.id)}
-                      className="text-red-400 hover:text-red-300 text-xs"
-                    >
-                      ✕
-                    </button>
-                  )}
                 </div>
 
                 {/* Content */}
@@ -128,17 +113,6 @@ export function OutputPanel({
             );
           })}
         </div>
-      )}
-
-      {/* Add Handle Button */}
-      {dynamicHandles && (
-        <button
-          type="button"
-          onClick={onAddHandle}
-          className="btn-ghost w-full mt-3 px-3 py-2 text-xs border border-dashed border-slate-700"
-        >
-          + Add Output Handle
-        </button>
       )}
     </div>
   );

@@ -1,0 +1,83 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum WorkflowStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model Workflow {
+  id          String         @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  status      WorkflowStatus @default(DRAFT)
+
+  nodes Node[]
+  edges Edge[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Node {
+  id         String   @id // Client-provided (nanoid)
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  // Fields matching WorkflowNode
+  type          String       // e.g., "trigger.start", "code.http", "flow.if"
+  version       Int          // Versioning support
+  category      String
+  positionX     Float
+  positionY     Float
+  configValues  Json         // Record<string, any>
+  label         String
+  description   String
+
+  // Handle arrays stored as JSON
+  inputHandles  Json  // Handle[]
+  outputHandles Json  // Handle[]
+  configHandles Json? // Handle[] | undefined
+
+  // Back-relations to edges
+  outgoingEdges Edge[] @relation("EdgeSource")
+  incomingEdges Edge[] @relation("EdgeTarget")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workflowId])
+}
+
+model Edge {
+  id String @id // Client-provided (nanoid)
+
+  // Fields matching WorkflowEdge
+  sourceNodeId String
+  targetNodeId String
+  sourceHandle String?
+  targetHandle String?
+
+  // DB-only fields
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  sourceNode Node @relation("EdgeSource", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode Node @relation("EdgeTarget", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workflowId])
+}

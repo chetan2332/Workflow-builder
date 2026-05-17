@@ -27,10 +27,10 @@ export declare class WorkflowsController {
             description: string;
             type: string;
             version: number;
-            category: import("../../generated/prisma/enums").NodeCategory;
+            category: string;
             positionX: number;
             positionY: number;
-            config: import("@prisma/client/runtime/client").JsonValue;
+            configValues: import("@prisma/client/runtime/client").JsonValue;
             label: string;
             inputHandles: import("@prisma/client/runtime/client").JsonValue;
             outputHandles: import("@prisma/client/runtime/client").JsonValue;
@@ -67,10 +67,10 @@ export declare class WorkflowsController {
             description: string;
             type: string;
             version: number;
-            category: import("../../generated/prisma/enums").NodeCategory;
+            category: string;
             positionX: number;
             positionY: number;
-            config: import("@prisma/client/runtime/client").JsonValue;
+            configValues: import("@prisma/client/runtime/client").JsonValue;
             label: string;
             inputHandles: import("@prisma/client/runtime/client").JsonValue;
             outputHandles: import("@prisma/client/runtime/client").JsonValue;
