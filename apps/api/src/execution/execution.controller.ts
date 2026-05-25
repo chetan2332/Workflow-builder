@@ -3,6 +3,7 @@ import { ExecutionService } from './execution.service';
 import { ExecuteNodeRequestDto } from './dto/execute-node-request.dto';
 import { ExecuteNodeResponseDto } from './dto/execute-node-response.dto';
 import { GetNodesResponseDto } from './dto/get-nodes-response.dto';
+import { Public } from '../auth/public.decorator';
 
 /**
  * Execution Controller
@@ -33,6 +34,7 @@ export class ExecutionController {
    *   "count": 8
    * }
    */
+  @Public()
   @Get('nodes')
   async getNodes(): Promise<GetNodesResponseDto> {
     return this.executionService.getNodeDefinitions();

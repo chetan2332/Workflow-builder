@@ -1,1 +1,0 @@
-{"version":3,"file":"create-workflow.dto.js","sourceRoot":"","sources":["../../../../src/workflows/dto/create-workflow.dto.ts"],"names":[],"mappings":";;;AAGA,MAAa,iBAAiB;IAC1B,IAAI,CAAU;IACd,WAAW,GAAW,EAAE,CAAC;IACzB,MAAM,GAAmB,OAAO,CAAC;IACjC,KAAK,GAAmB,EAAE,CAAC;IAC3B,KAAK,GAAmB,EAAE,CAAC;CAC9B;AAND,8CAMC"}

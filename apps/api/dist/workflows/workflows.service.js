@@ -1,25 +1,30 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '@n8n-project/database';
-import { CreateWorkflowDto } from './dto/create-workflow.dto';
-import { UpdateWorkflowDto } from './dto/update-workflow.dto';
-
-@Injectable()
-export class WorkflowsService {
-
-    constructor(
-        private readonly prisma: PrismaService,
-    ) {}
-
-    async findAll(userId: string, query?: { page?: number; limit?: number; status?: string }) {
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WorkflowsService = void 0;
+const common_1 = require("@nestjs/common");
+const database_1 = require("@n8n-project/database");
+let WorkflowsService = class WorkflowsService {
+    prisma;
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async findAll(userId, query) {
         const page = query?.page || 1;
         const limit = Math.min(query?.limit || 20, 100);
         const skip = (page - 1) * limit;
-
         const where = {
             userId,
-            ...(query?.status ? { status: query.status as any } : {}),
+            ...(query?.status ? { status: query.status } : {}),
         };
-
         const [workflows, total] = await Promise.all([
             this.prisma.workflow.findMany({
                 where,
@@ -40,11 +45,9 @@ export class WorkflowsService {
             }),
             this.prisma.workflow.count({ where }),
         ]);
-
         return { workflows, total, page, pageSize: limit };
     }
-
-    async findOne(id: string, userId: string) {
+    async findOne(id, userId) {
         return this.prisma.workflow.findUnique({
             where: { id, userId },
             include: {
@@ -76,8 +79,7 @@ export class WorkflowsService {
             },
         });
     }
-
-    create(dto: CreateWorkflowDto, userId: string) {
+    create(dto, userId) {
         return this.prisma.workflow.create({
             data: {
                 userId,
@@ -86,31 +88,21 @@ export class WorkflowsService {
             }
         });
     }
-
-    async update(id: string, dto: UpdateWorkflowDto, userId: string) {
-        // Validate edges reference valid nodes
+    async update(id, dto, userId) {
         const nodeIds = new Set(dto.nodes.map(n => n.id));
-        const invalidEdges = dto.edges.filter(
-            e => !nodeIds.has(e.sourceNodeId) || !nodeIds.has(e.targetNodeId)
-        );
-
+        const invalidEdges = dto.edges.filter(e => !nodeIds.has(e.sourceNodeId) || !nodeIds.has(e.targetNodeId));
         if (invalidEdges.length > 0) {
-            throw new BadRequestException('Edges reference non-existent nodes');
+            throw new common_1.BadRequestException('Edges reference non-existent nodes');
         }
-
-        // Execute transaction
         return this.prisma.$transaction(async (tx) => {
-            // Update workflow metadata
             await tx.workflow.update({
                 where: { id },
                 data: {
                     name: dto.name,
                     description: dto.description,
-                    status: dto.status as any,
+                    status: dto.status,
                 },
             });
-
-            // Fetch existing entities
             const [existingNodes, existingEdges] = await Promise.all([
                 tx.node.findMany({
                     where: { workflowId: id },
@@ -121,40 +113,26 @@ export class WorkflowsService {
                     select: { id: true },
                 }),
             ]);
-
             const existingNodeIds = new Set(existingNodes.map(n => n.id));
             const existingEdgeIds = new Set(existingEdges.map(e => e.id));
-
             const incomingNodeIds = new Set(dto.nodes.map(n => n.id));
             const incomingEdgeIds = new Set(dto.edges.map(e => e.id));
-
-            // Calculate diffs
-            const nodesToDelete = Array.from(existingNodeIds).filter(
-                nid => !incomingNodeIds.has(nid)
-            );
+            const nodesToDelete = Array.from(existingNodeIds).filter(nid => !incomingNodeIds.has(nid));
             const nodesToCreate = dto.nodes.filter(n => !existingNodeIds.has(n.id));
             const nodesToUpdate = dto.nodes.filter(n => existingNodeIds.has(n.id));
-
-            const edgesToDelete = Array.from(existingEdgeIds).filter(
-                eid => !incomingEdgeIds.has(eid)
-            );
+            const edgesToDelete = Array.from(existingEdgeIds).filter(eid => !incomingEdgeIds.has(eid));
             const edgesToCreate = dto.edges.filter(e => !existingEdgeIds.has(e.id));
             const edgesToUpdate = dto.edges.filter(e => existingEdgeIds.has(e.id));
-
-            // Delete removed entities
             if (nodesToDelete.length > 0) {
                 await tx.node.deleteMany({
                     where: { id: { in: nodesToDelete } },
                 });
             }
-
             if (edgesToDelete.length > 0) {
                 await tx.edge.deleteMany({
                     where: { id: { in: edgesToDelete } },
                 });
             }
-
-            // Create new nodes
             if (nodesToCreate.length > 0) {
                 await tx.node.createMany({
                     data: nodesToCreate.map(n => ({
@@ -162,44 +140,36 @@ export class WorkflowsService {
                         workflowId: id,
                         type: n.type,
                         version: n.version,
-                        category: n.category as any,
+                        category: n.category,
                         positionX: n.positionX,
                         positionY: n.positionY,
-                        configValues: n.configValues as any,
+                        configValues: n.configValues,
                         label: n.label,
                         description: n.description,
-                        inputHandles: n.inputHandles as any,
-                        outputHandles: n.outputHandles as any,
-                        configHandles: n.configHandles as any,
+                        inputHandles: n.inputHandles,
+                        outputHandles: n.outputHandles,
+                        configHandles: n.configHandles,
                     })),
                 });
             }
-
-            // Update existing nodes
             if (nodesToUpdate.length > 0) {
-                await Promise.all(
-                    nodesToUpdate.map(n =>
-                        tx.node.update({
-                            where: { id: n.id },
-                            data: {
-                                type: n.type,
-                                version: n.version,
-                                category: n.category as any,
-                                positionX: n.positionX,
-                                positionY: n.positionY,
-                                configValues: n.configValues as any,
-                                label: n.label,
-                                description: n.description,
-                                inputHandles: n.inputHandles as any,
-                                outputHandles: n.outputHandles as any,
-                                configHandles: n.configHandles as any,
-                            },
-                        })
-                    )
-                );
+                await Promise.all(nodesToUpdate.map(n => tx.node.update({
+                    where: { id: n.id },
+                    data: {
+                        type: n.type,
+                        version: n.version,
+                        category: n.category,
+                        positionX: n.positionX,
+                        positionY: n.positionY,
+                        configValues: n.configValues,
+                        label: n.label,
+                        description: n.description,
+                        inputHandles: n.inputHandles,
+                        outputHandles: n.outputHandles,
+                        configHandles: n.configHandles,
+                    },
+                })));
             }
-
-            // Create new edges
             if (edgesToCreate.length > 0) {
                 await tx.edge.createMany({
                     data: edgesToCreate.map(e => ({
@@ -212,33 +182,30 @@ export class WorkflowsService {
                     })),
                 });
             }
-
-            // Update existing edges
             if (edgesToUpdate.length > 0) {
-                await Promise.all(
-                    edgesToUpdate.map(e =>
-                        tx.edge.update({
-                            where: { id: e.id },
-                            data: {
-                                sourceHandle: e.sourceHandle,
-                                targetHandle: e.targetHandle,
-                            },
-                        })
-                    )
-                );
+                await Promise.all(edgesToUpdate.map(e => tx.edge.update({
+                    where: { id: e.id },
+                    data: {
+                        sourceHandle: e.sourceHandle,
+                        targetHandle: e.targetHandle,
+                    },
+                })));
             }
-
-            // Return updated workflow
             return this.findOne(id, userId);
         }, {
             maxWait: 5000,
             timeout: 10000,
         });
     }
-
-    delete(id: string, userId: string) {
+    delete(id, userId) {
         return this.prisma.workflow.delete({
             where: { id, userId }
         });
     }
-}
+};
+exports.WorkflowsService = WorkflowsService;
+exports.WorkflowsService = WorkflowsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [database_1.PrismaService])
+], WorkflowsService);
+//# sourceMappingURL=workflows.service.js.map
