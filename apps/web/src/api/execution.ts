@@ -1,4 +1,5 @@
 import type { NodeDefinition } from '@n8n-project/shared';
+import { authHeaders } from './client';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3000';
 
@@ -65,7 +66,7 @@ export async function executeNode(
 ): Promise<ExecuteNodeResponse> {
   const response = await fetch(`${API_BASE}/api/execution/node/${nodeId}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
   });
 

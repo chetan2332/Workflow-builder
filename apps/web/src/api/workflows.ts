@@ -4,6 +4,7 @@ import type {
   CreateWorkflowRequest,
   UpdateWorkflowRequest,
 } from '@n8n-project/shared';
+import { authHeaders } from './client';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3000';
 
@@ -11,7 +12,9 @@ const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3000';
  * Fetch all workflows
  */
 export async function getWorkflows(): Promise<Workflow[]> {
-  const response = await fetch(`${API_BASE}/workflows`);
+  const response = await fetch(`${API_BASE}/workflows`, {
+    headers: authHeaders(),
+  });
 
   if (!response.ok) {
     throw new Error(await readErrorMessage(response));
@@ -25,7 +28,9 @@ export async function getWorkflows(): Promise<Workflow[]> {
  * Fetch a single workflow by ID
  */
 export async function fetchWorkflow(id: string): Promise<WorkflowDetail> {
-  const response = await fetch(`${API_BASE}/workflows/${id}`);
+  const response = await fetch(`${API_BASE}/workflows/${id}`, {
+    headers: authHeaders(),
+  });
 
   if (!response.ok) {
     throw new Error(await readErrorMessage(response));
@@ -43,7 +48,7 @@ export async function updateWorkflow(
 ): Promise<WorkflowDetail> {
   const response = await fetch(`${API_BASE}/workflows/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 
@@ -62,7 +67,7 @@ export async function createWorkflow(
 ): Promise<Workflow> {
   const response = await fetch(`${API_BASE}/workflows`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
 
@@ -79,6 +84,7 @@ export async function createWorkflow(
 export async function deleteWorkflow(id: string): Promise<void> {
   const response = await fetch(`${API_BASE}/workflows/${id}`, {
     method: 'DELETE',
+    headers: authHeaders(),
   });
 
   if (!response.ok) {

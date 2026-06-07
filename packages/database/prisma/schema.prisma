@@ -8,6 +8,15 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id        String     @id  // Cognito sub (or "default" until auth is set up)
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  workflows Workflow[]
+}
+
 enum WorkflowStatus {
   DRAFT
   ACTIVE
@@ -17,6 +26,7 @@ enum WorkflowStatus {
 model Workflow {
   id          String         @id @default(cuid())
   userId      String
+  user        User           @relation(fields: [userId], references: [id])
   name        String
   description String?
   status      WorkflowStatus @default(DRAFT)
@@ -35,22 +45,19 @@ model Node {
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
-  // Fields matching WorkflowNode
-  type          String       // e.g., "trigger.start", "code.http", "flow.if"
-  version       Int          // Versioning support
+  type          String
+  version       Int
   category      String
   positionX     Float
   positionY     Float
-  configValues  Json         // Record<string, any>
+  configValues  Json
   label         String
   description   String
 
-  // Handle arrays stored as JSON
-  inputHandles  Json  // Handle[]
-  outputHandles Json  // Handle[]
-  configHandles Json? // Handle[] | undefined
+  inputHandles  Json
+  outputHandles Json
+  configHandles Json?
 
-  // Back-relations to edges
   outgoingEdges Edge[] @relation("EdgeSource")
   incomingEdges Edge[] @relation("EdgeTarget")
 
@@ -63,13 +70,11 @@ model Node {
 model Edge {
   id String @id // Client-provided (nanoid)
 
-  // Fields matching WorkflowEdge
   sourceNodeId String
   targetNodeId String
   sourceHandle String?
   targetHandle String?
 
-  // DB-only fields
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
