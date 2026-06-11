@@ -22,7 +22,6 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     syncUser(user) {
-        console.log('Syncing user:', user);
         return this.authService.syncUser(user.userId, user.email);
     }
 };

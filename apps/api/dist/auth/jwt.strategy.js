@@ -66,12 +66,10 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
     }
     validate(payload) {
-        console.log('JWT Payload:', payload);
         const obj = {
             userId: payload.sub,
             email: payload.email,
         };
-        console.log('Validated JWT Payload:', obj);
         return obj;
     }
 };

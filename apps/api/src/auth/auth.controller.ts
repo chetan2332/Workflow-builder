@@ -8,7 +8,6 @@ export class AuthController {
 
   @Post('me')
   syncUser(@CurrentUser() user: AuthUser) {
-    console.log('Syncing user:', user);
     return this.authService.syncUser(user.userId, user.email);
   }
 }
