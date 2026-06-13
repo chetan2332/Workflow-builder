@@ -8,9 +8,8 @@ dist
 .turbo
 **/.turbo
 
-# Frontend app — not needed in API image
+# Frontend app — not needed in backend images
 apps/web
-apps/execution-engine
 
 # Environment files
 .env

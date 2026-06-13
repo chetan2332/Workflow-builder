@@ -32,9 +32,11 @@ FROM node:22-alpine AS runner
 WORKDIR /app
 
 COPY --from=builder /deploy .
+COPY --from=builder /app/packages/database/prisma ./prisma
+COPY --from=builder /app/packages/database/prisma.config.ts ./prisma.config.ts
 
 ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=prisma/schema.prisma && node dist/main"]

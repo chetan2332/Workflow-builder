@@ -1,88 +1,48 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
-import { NodeFactory } from './nodes/factory';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 import { getAllNodeDefinitions } from './nodes/registry';
-import { ResourceTracker } from './utils/resource-tracker';
 import { ExecuteNodeRequestDto } from './dto/execute-node-request.dto';
 import { ExecuteNodeResponseDto } from './dto/execute-node-response.dto';
 import { GetNodesResponseDto } from './dto/get-nodes-response.dto';
 
-/**
- * Execution Service
- *
- * Handles:
- * - Node execution (single node runs)
- * - Node definitions retrieval
- */
 @Injectable()
 export class ExecutionService {
-  /**
-   * Execute a single node
-   */
+  private readonly engineUrl = process.env.EXECUTION_ENGINE_URL ?? 'http://localhost:3001';
+
+  constructor(private readonly http: HttpService) {}
+
   async executeNode(request: ExecuteNodeRequestDto): Promise<ExecuteNodeResponseDto> {
     const { nodeId, type, version, config, inputs } = request;
 
     try {
-      // Create node instance using factory
-      const node = NodeFactory.create({
-        id: nodeId,
-        type,
-        version,
-        config,
-        inputs
-      });
-
-      // Create execution context
-      const tracker = new ResourceTracker();
-      const ctx = {
-        nodeId: node.id,
-        definition: node.definition,
-        inputs,
-        config,
-        tracker
-      };
-
-      // Execute node
-      const result = await node.execute(ctx);
-
-      // Return formatted response
-      return {
-        success: true,
-        result
-      };
-
+      const { data } = await firstValueFrom(
+        this.http.post<ExecuteNodeResponseDto>(
+          `${this.engineUrl}/api/execution/node/${nodeId}`,
+          { nodeId, type, version, config, inputs }
+        )
+      );
+      return data;
     } catch (error: any) {
-      // If it's a validation error, return as bad request
-      if (error.message.includes('validation') || error.message.includes('Unknown node type')) {
-        throw new BadRequestException({
-          success: false,
-          error: {
-            message: error.message,
-            code: 'VALIDATION_ERROR'
-          }
-        });
+      const status = error.response?.status;
+      const body = error.response?.data;
+
+      if (status === 400) {
+        throw new BadRequestException(body);
       }
 
-      // Otherwise, internal server error
-      throw new InternalServerErrorException({
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code || 'EXECUTION_ERROR',
-          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      throw new InternalServerErrorException(
+        body ?? {
+          success: false,
+          error: { message: error.message, code: 'EXECUTION_ENGINE_ERROR' }
         }
-      });
+      );
     }
   }
 
-  /**
-   * Get all available node definitions
-   */
   async getNodeDefinitions(): Promise<GetNodesResponseDto> {
     const definitions = getAllNodeDefinitions();
-
-    return {
-      nodes: definitions,
-      count: definitions.length
-    };
+    return { nodes: definitions, count: definitions.length };
   }
 }
+

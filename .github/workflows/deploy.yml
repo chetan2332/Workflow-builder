@@ -1,4 +1,4 @@
-name: Deploy API
+name: Deploy
 
 on:
   push:
@@ -6,19 +6,15 @@ on:
       - main
 
 env:
-  AWS_REGION: eu-north-1
-  ECR_REGISTRY: 705942571816.dkr.ecr.eu-north-1.amazonaws.com
-  ECR_REPOSITORY: flowstack/api
-  EC2_INSTANCE_ID: i-0f525833a83721d7f
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 705942571816.dkr.ecr.us-east-1.amazonaws.com
 
 jobs:
-  deploy:
-    name: Build and Deploy
+  deploy-api:
+    name: API
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -30,23 +26,103 @@ jobs:
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push image
+      - name: Build and push
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} .
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker build -f apps/api/Dockerfile \
+            -t $ECR_REGISTRY/flowstack/api:${{ github.sha }} \
+            -t $ECR_REGISTRY/flowstack/api:latest .
+          docker push $ECR_REGISTRY/flowstack/api:${{ github.sha }}
+          docker push $ECR_REGISTRY/flowstack/api:latest
 
-      - name: Deploy to EC2 via SSM
+      - name: Deploy to EC2
         run: |
           aws ssm send-command \
-            --instance-ids $EC2_INSTANCE_ID \
+            --instance-ids i-04a4d6ed13187974e \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=[
-              "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 705942571816.dkr.ecr.eu-north-1.amazonaws.com",
-              "docker pull 705942571816.dkr.ecr.eu-north-1.amazonaws.com/flowstack/api:latest",
+            --parameters commands='[
+              "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 705942571816.dkr.ecr.us-east-1.amazonaws.com",
+              "docker pull 705942571816.dkr.ecr.us-east-1.amazonaws.com/flowstack/api:latest",
               "docker stop flowstack-api || true",
               "docker rm flowstack-api || true",
-              "docker run -d --name flowstack-api --restart unless-stopped -p 3000:3000 --env-file /etc/flowstack/api.env 705942571816.dkr.ecr.eu-north-1.amazonaws.com/flowstack/api:latest"
+              "docker run -d --name flowstack-api --restart unless-stopped -p 3000:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e NODE_ENV=production -e PORT=3000 -e CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} -e EXECUTION_ENGINE_URL=${{ secrets.EXECUTION_ENGINE_URL }} 705942571816.dkr.ecr.us-east-1.amazonaws.com/flowstack/api:latest"
             ]' \
             --output text
+
+  deploy-execution-engine:
+    name: Execution Engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push
+        run: |
+          docker build -f apps/execution-engine/Dockerfile \
+            -t $ECR_REGISTRY/flowstack/execution-engine:${{ github.sha }} \
+            -t $ECR_REGISTRY/flowstack/execution-engine:latest .
+          docker push $ECR_REGISTRY/flowstack/execution-engine:${{ github.sha }}
+          docker push $ECR_REGISTRY/flowstack/execution-engine:latest
+
+      - name: Deploy to EC2
+        run: |
+          aws ssm send-command \
+            --instance-ids i-0a05b4d0f69b80f90 \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands='[
+              "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 705942571816.dkr.ecr.us-east-1.amazonaws.com",
+              "docker pull 705942571816.dkr.ecr.us-east-1.amazonaws.com/flowstack/execution-engine:latest",
+              "docker stop flowstack-engine || true",
+              "docker rm flowstack-engine || true",
+              "docker run -d --name flowstack-engine --restart unless-stopped -p 3001:3001 -e NODE_ENV=production -e PORT=3001 705942571816.dkr.ecr.us-east-1.amazonaws.com/flowstack/execution-engine:latest"
+            ]' \
+            --output text
+
+  deploy-frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm turbo build --filter=web
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: aws s3 sync apps/web/dist s3://flowstack-web --delete
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E3I8LRRPEMS0ET \
+            --paths "/*"
