@@ -33,7 +33,6 @@ WORKDIR /app
 
 COPY --from=builder /deploy .
 COPY --from=builder /app/packages/database/prisma ./prisma
-COPY --from=builder /app/packages/database/prisma.config.ts ./prisma.config.ts
 
 ENV NODE_ENV=production
 
