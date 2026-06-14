@@ -12,7 +12,7 @@ import { Public } from '../auth/public.decorator';
  * - GET /api/execution/nodes - Get all node definitions
  * - POST /api/execution/node/:nodeId - Execute a node
  */
-@Controller('api/execution')
+@Controller('execution')
 export class ExecutionController {
   constructor(private readonly executionService: ExecutionService) {}
 
