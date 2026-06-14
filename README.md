@@ -143,4 +143,4 @@ sudo yum update -y && sudo yum install -y docker
 sudo systemctl start docker && sudo systemctl enable docker
 ```
 
-Migrations run automatically on every API container startup via `prisma migrate deploy`.
+Migrations run automatically on every API container startup via `prisma migrate deploy`
