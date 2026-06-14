@@ -64,7 +64,7 @@ jobs:
               "docker stop flowstack-api || true",
               "docker rm flowstack-api || true",
               "DB_PASS=$(aws secretsmanager get-secret-value --region us-east-1 --secret-id arn:aws:secretsmanager:us-east-1:705942571816:secret:rds!cluster-d909fcee-19ad-4a4a-8184-f883c0880358-ZIX4RD --query SecretString --output text | jq -r .password)",
-              "echo DATABASE_URL=postgresql://postgres:${DB_PASS}@flowstack-instance-1.ckp0mmykuzj3.us-east-1.rds.amazonaws.com:5432/postgres?sslmode=require&uselibpqcompat=true > /tmp/api.env",
+              "echo \"DATABASE_URL=postgresql://postgres:${DB_PASS}@flowstack-instance-1.ckp0mmykuzj3.us-east-1.rds.amazonaws.com:5432/postgres?sslmode=require&uselibpqcompat=true\" > /tmp/api.env",
               "echo NODE_ENV=production >> /tmp/api.env",
               "echo PORT=3000 >> /tmp/api.env",
               "echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> /tmp/api.env",
