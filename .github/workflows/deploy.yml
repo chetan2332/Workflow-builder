@@ -4,6 +4,18 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'App to deploy'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - api
+          - execution-engine
+          - frontend
 
 env:
   AWS_REGION: us-east-1
@@ -13,6 +25,7 @@ jobs:
   deploy-api:
     name: API
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || inputs.app == 'all' || inputs.app == 'api' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -51,6 +64,7 @@ jobs:
   deploy-execution-engine:
     name: Execution Engine
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || inputs.app == 'all' || inputs.app == 'execution-engine' }}
     steps:
       - uses: actions/checkout@v4
 
