@@ -16,6 +16,11 @@ on:
           - api
           - execution-engine
           - frontend
+      env_only:
+        description: 'Skip build — only restart containers with updated env vars (API + engine only)'
+        required: false
+        default: false
+        type: boolean
 
 env:
   AWS_REGION: us-east-1
@@ -40,6 +45,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push
+        if: ${{ !inputs.env_only }}
         run: |
           docker build -f apps/api/Dockerfile \
             -t $ECR_REGISTRY/flowstack/api:${{ github.sha }} \
@@ -79,6 +85,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push
+        if: ${{ !inputs.env_only }}
         run: |
           docker build -f apps/execution-engine/Dockerfile \
             -t $ECR_REGISTRY/flowstack/execution-engine:${{ github.sha }} \
@@ -103,6 +110,7 @@ jobs:
   deploy-frontend:
     name: Frontend
     runs-on: ubuntu-latest
+    if: ${{ (github.event_name == 'push' || inputs.app == 'all' || inputs.app == 'frontend') && !inputs.env_only }}
     steps:
       - uses: actions/checkout@v4
 
