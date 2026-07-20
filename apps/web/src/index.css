@@ -1,87 +1,200 @@
 @import "tailwindcss";
 
+/* ── Design tokens ───────────────────────────────────────────── */
+
 :root {
   color-scheme: dark;
+
+  /* Background layers */
+  --color-bg:             #08090B;
+  --color-surface:        #10131A;
+  --color-surface-raised: #181D26;
+
+  /* Borders */
+  --color-border:         #242B38;
+
+  /* Text hierarchy */
+  --color-text-primary:   #E2E8F0;
+  --color-text-secondary: #8490A4;
+  --color-text-faint:     #4A556A;
+
+  /* Accent */
+  --color-accent:         #00C49A;
+  --color-accent-dim:     rgba(0, 196, 154, 0.10);
+
+  /* Semantic */
+  --color-warning:        #F59E0B;
+  --color-danger:         #EF4444;
+
+  /* Typography */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
 }
+
+/* ── Base ────────────────────────────────────────────────────── */
 
 body {
-  @apply min-h-screen bg-slate-950 text-slate-50 font-sans;
+  min-height: 100svh;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Cards ───────────────────────────────────────────────────── */
 
 .app-card {
-  @apply rounded-lg border border-slate-800 bg-slate-900;
+  @apply rounded-lg;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
 }
 
+/* ── Buttons ─────────────────────────────────────────────────── */
+
 .btn {
-  @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed;
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  font-family: var(--font-body);
 }
 
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-500 text-white;
+  background-color: var(--color-accent);
+  color: #08090B;
+  font-weight: 600;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-accent) 85%, white 15%);
 }
 
 .btn-danger {
-  @apply bg-red-600 hover:bg-red-500 text-white;
+  background-color: var(--color-danger);
+  color: #ffffff;
+}
+.btn-danger:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-danger) 85%, white 15%);
 }
 
 .btn-ghost {
-  @apply text-slate-300 hover:bg-slate-800;
+  background-color: transparent;
+  color: var(--color-text-secondary);
 }
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-primary);
+}
+
+.btn-exit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 150ms;
+}
+.btn-exit:hover {
+  color: var(--color-text-secondary);
+}
+
+/* ── Inputs ──────────────────────────────────────────────────── */
 
 .input {
-  @apply w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500;
+  @apply w-full rounded-md text-sm transition-colors duration-150;
+  padding: 0.375rem 0.625rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  outline: none;
+}
+.input::placeholder {
+  color: var(--color-text-faint);
+}
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
 }
 
+/* ── Typography helpers ──────────────────────────────────────── */
+
 .label-sm {
-  @apply block text-xs font-medium text-slate-400 mb-1;
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+  font-family: var(--font-body);
 }
 
 .heading-page {
-  @apply text-lg font-semibold tracking-tight;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
 }
 
 .heading-section {
-  @apply text-[10px] font-semibold uppercase tracking-wide text-slate-500;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
 }
 
 .text-muted {
-  @apply text-sm text-slate-400;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
 }
 
 .text-xs-muted {
-  @apply text-xs text-slate-400;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
 }
 
-/* React Flow controls theming for dark canvas */
+/* ── React Flow overrides ────────────────────────────────────── */
+
 .react-flow__controls {
-  @apply bg-slate-900/90 border border-slate-700 rounded-md shadow-md;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .react-flow__controls button {
-  @apply bg-slate-900 text-slate-100 border border-slate-600 hover:bg-slate-800;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.react-flow__controls button:hover {
+  background-color: var(--color-surface-raised);
 }
 
 .react-flow__controls button svg {
-  @apply text-slate-100;
+  color: var(--color-text-primary);
 }
 
-/* React Flow edges: grey by default, white when selected */
 .react-flow__edge-path {
-  stroke: #4b5563 !important; /* slate-600 */
+  stroke: var(--color-border) !important;
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #f9fafb !important; /* near-white */
+  stroke: var(--color-accent) !important;
 }
 
-/* React Flow handles: small grey dots */
 .react-flow__handle {
-  background-color: #6b7280 !important; /* slate-500 */
+  background-color: var(--color-text-faint) !important;
   width: 0.4rem !important;
   height: 0.4rem !important;
 }
 
-/* Default cursor on pane so box selection works without hand pointer */
 .react-flow__pane {
   cursor: default;
 }

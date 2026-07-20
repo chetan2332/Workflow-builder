@@ -1,39 +1,68 @@
+import ivm from 'isolated-vm';
 import { CodeNode } from '../categories/code-node';
 import type { ExecutionContext } from '../base/base-node';
 
 /**
- * FUNCTION node - Execute custom JavaScript code
+ * FUNCTION node — Execute custom JavaScript code in a sandboxed V8 isolate.
  *
- * User's code is wrapped in: function(input) { <user code> }
- * TODO: Implement proper sandboxing (vm2, isolated-vm)
+ * User code runs in a completely isolated environment:
+ * - No access to Node.js APIs (require, process, fs, fetch, etc.)
+ * - Memory limited to 128MB
+ * - Execution timeout of 5 seconds
+ * - Only `input` is available as a global variable
+ *
+ * User's code is wrapped as: (function() { <user code> })()
+ * The code must `return` a value.
  */
 export class FunctionNode extends CodeNode {
+  private static readonly MEMORY_LIMIT_MB = 128;
+  private static readonly TIMEOUT_MS = 5000;
+
   protected async executeCode(input: any, ctx: ExecutionContext): Promise<any> {
-    const config = ctx.config;
+    const { code } = ctx.config;
 
-    ctx.tracker.log('Executing user function', 'info');
+    if (!code || !code.trim()) {
+      throw new Error('Function code is required');
+    }
 
-    // Create sandboxed function
-    // User's code is just the function body
-    // We wrap it in: function(input) { <user code> }
-    const userFunction = this.createSandboxedFunction(config.code);
+    ctx.tracker.log('Executing user function in sandbox', 'info');
 
-    // Execute with input
-    const result = await userFunction(input);
-
-    return result;
-  }
-
-  private createSandboxedFunction(code: string): Function {
-    // TODO: Implement proper sandboxing (vm2, isolated-vm, etc.)
-    // For now, simple Function constructor (UNSAFE for production)
+    const isolate = new ivm.Isolate({ memoryLimit: FunctionNode.MEMORY_LIMIT_MB });
 
     try {
-      // Wrap user code in function
-      const fn = new Function('input', code);
-      return fn;
+      const context = await isolate.createContext();
+      const jail = context.global;
+
+      // Inject input as a read-only global (serialized via JSON)
+      await jail.set('__inputJson', JSON.stringify(input), { copy: true });
+
+      // Wrap user code: parse input, execute their code, return result as JSON
+      const wrappedCode = `
+        const input = JSON.parse(__inputJson);
+        const __result = (function() {
+          ${code}
+        })();
+        JSON.stringify(__result);
+      `;
+
+      const script = await isolate.compileScript(wrappedCode);
+      const resultJson = await script.run(context, { timeout: FunctionNode.TIMEOUT_MS });
+
+      if (resultJson === undefined) {
+        throw new Error('Function did not return a value. Make sure your code has a return statement.');
+      }
+
+      return JSON.parse(resultJson);
     } catch (error: any) {
-      throw new Error(`Function compilation failed: ${error.message}`);
+      if (error.message?.includes('Script execution timed out')) {
+        throw new Error('Function execution timed out (5s limit)');
+      }
+      if (error.message?.includes('isolate was disposed')) {
+        throw new Error('Function exceeded memory limit (128MB)');
+      }
+      throw new Error(`Function execution failed: ${error.message}`);
+    } finally {
+      isolate.dispose();
     }
   }
 }

@@ -31,73 +31,151 @@ export function AppShell() {
 
   if (auth.isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
-        <span className="text-sm text-slate-400">Loading...</span>
+      <div
+        style={{ minHeight: '100svh', backgroundColor: 'var(--color-bg)' }}
+        className="flex items-center justify-center"
+      >
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-text-faint)' }}>
+          Loading…
+        </span>
       </div>
     );
   }
 
   if (auth.error) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
-        <span className="text-sm text-red-400">{auth.error.message}</span>
+      <div
+        style={{ minHeight: '100svh', backgroundColor: 'var(--color-bg)' }}
+        className="flex items-center justify-center"
+      >
+        <span style={{ fontSize: 13, color: 'var(--color-danger)' }}>
+          {auth.error.message}
+        </span>
       </div>
     );
   }
 
   if (!auth.isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50">
-        <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
-          <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-            <span className="text-sm font-semibold tracking-tight">Automation Workflow Builder</span>
+      <div
+        style={{ minHeight: '100svh', backgroundColor: 'var(--color-bg)' }}
+        className="flex items-center justify-center p-4"
+      >
+        <div
+          style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}
+          className="rounded-xl p-8 flex flex-col items-center gap-6 w-full max-w-[320px]"
+        >
+          <div className="flex items-center gap-2">
+            <BrandMonogram />
+            <BrandWordmark />
           </div>
-        </header>
-        <main className="max-w-5xl mx-auto px-6 py-6">
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <p className="text-slate-400 text-sm">Sign in to manage your workflows.</p>
-            <button
-              onClick={() => auth.signinRedirect()}
-              className="btn btn-primary px-4 py-2 text-sm"
-            >
-              Sign in
-            </button>
-          </div>
-        </main>
+
+          <p style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 20,
+            fontWeight: 400,
+            color: 'var(--color-text-primary)',
+            textAlign: 'center',
+            lineHeight: 1.3,
+            margin: 0,
+          }}>
+            Automate anything.
+          </p>
+
+          <button
+            onClick={() => auth.signinRedirect()}
+            className="btn btn-primary w-full py-2 text-sm"
+          >
+            Continue with SSO
+          </button>
+        </div>
       </div>
     );
   }
 
   if (isEditorRoute) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50">
+      <div style={{ minHeight: '100svh', backgroundColor: 'var(--color-bg)', color: 'var(--color-text-primary)' }}>
         <Outlet />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
-      <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link to="/workflows" className="text-sm font-semibold tracking-tight">
-            Automation Workflow Builder
+    <div style={{ minHeight: '100svh', backgroundColor: 'var(--color-bg)', color: 'var(--color-text-primary)' }}>
+      <header style={{
+        height: 44,
+        backgroundColor: 'color-mix(in srgb, var(--color-bg) 95%, transparent)',
+        borderBottom: '1px solid var(--color-border)',
+        backdropFilter: 'blur(8px)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 40,
+      }}>
+        <div className="h-full max-w-5xl mx-auto px-4 flex items-center justify-between">
+          <Link to="/workflows" className="flex items-center gap-2" aria-label="Flowstack home">
+            <BrandMonogram />
+            <BrandWordmark />
           </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-slate-400">{auth.user?.profile.email}</span>
-            <button
-              onClick={signOutRedirect}
-              className="text-xs text-slate-400 hover:text-slate-200 transition-colors"
-            >
-              Sign out
+          <div className="flex items-center gap-3">
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              color: 'var(--color-text-secondary)',
+              userSelect: 'none',
+            }}>
+              {auth.user?.profile.email}
+            </span>
+            <button onClick={signOutRedirect} className="btn-exit">
+              exit
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-6">
+      <main className="max-w-5xl mx-auto px-4 py-6">
         <Outlet />
       </main>
     </div>
+  );
+}
+
+function BrandMonogram() {
+  return (
+    <div style={{
+      width: 22,
+      height: 22,
+      borderRadius: 3,
+      border: '2px solid var(--color-accent)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      <span style={{
+        fontFamily: 'var(--font-display)',
+        fontWeight: 600,
+        fontSize: 10,
+        color: 'var(--color-accent)',
+        lineHeight: 1,
+        letterSpacing: '-0.03em',
+      }}>
+        FS
+      </span>
+    </div>
+  );
+}
+
+function BrandWordmark() {
+  return (
+    <span style={{
+      fontFamily: 'var(--font-display)',
+      fontWeight: 600,
+      fontSize: 15,
+      color: 'var(--color-text-primary)',
+      letterSpacing: '-0.02em',
+    }}>
+      flowstack
+    </span>
   );
 }
