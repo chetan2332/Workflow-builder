@@ -1,7 +1,7 @@
 {
     "json.schemas": [
       {
-        "fileMatch": ["apps/web/src/node-config/*.json"],
+        "fileMatch": ["apps/ui/src/node-config/*.json"],
         "url": "./node.schema.json"
       }
     ]

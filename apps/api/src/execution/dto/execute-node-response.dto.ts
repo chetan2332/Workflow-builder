@@ -1,8 +1,18 @@
-import { NodeOutput } from '../nodes/base/base-node';
+/**
+ * Node execution result (outputs + metadata).
+ * The API only proxies this shape from the execution engine.
+ */
+export interface NodeOutput {
+  outputs: Record<string, any[]>;
+  metadata?: {
+    duration?: number;
+    itemsProcessed?: number;
+    logs?: string[];
+  };
+}
 
 /**
  * Response DTO for node execution
- * Uses NodeOutput from base-node.ts
  */
 export class ExecuteNodeResponseDto {
   /**

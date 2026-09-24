@@ -369,7 +369,6 @@ Always `lucide-react`. 13–15px inline/button, 20px empty states. Reduce `strok
 
 ## What not to do
 
-- Do not use `apps/web` styles or components.
 - Do not add third-party UI libraries (shadcn, radix, chakra).
 - Do not use `@import` for fonts in CSS.
 - Do not reference hardcoded Tailwind color classes.
