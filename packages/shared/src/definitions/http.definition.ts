@@ -12,7 +12,7 @@ export const httpDefinition: NodeDefinition = {
     id: 'in',
     label: 'Input',
     type: 'input',
-    schema: { type: 'any' },
+    schema: { type: 'object', properties: [] },
     fixed: true,
     schemaEditable: true
   }],
@@ -22,7 +22,7 @@ export const httpDefinition: NodeDefinition = {
       id: 'success',
       label: 'Success',
       type: 'output',
-      schema: { type: 'any' },
+      schema: { type: 'object', properties: [] },
       fixed: true,
       schemaEditable: true
     },

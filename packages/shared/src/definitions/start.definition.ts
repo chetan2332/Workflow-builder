@@ -14,7 +14,7 @@ export const startDefinition: NodeDefinition = {
     id: 'out',
     label: 'Output',
     type: 'output',
-    schema: { type: 'any' },
+    schema: { type: 'object', properties: [] },
     fixed: true,
     schemaEditable: true
   }],

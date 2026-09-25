@@ -1,10 +1,31 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { getAllNodeDefinitions } from './nodes/registry';
+import {
+  startDefinition,
+  httpDefinition,
+  llmDefinition,
+  functionDefinition,
+  ifDefinition,
+  switchDefinition,
+  conditionDefinition,
+  combineDefinition,
+} from '@n8n-project/shared';
+import type { NodeDefinition } from '@n8n-project/shared';
 import { ExecuteNodeRequestDto } from './dto/execute-node-request.dto';
 import { ExecuteNodeResponseDto } from './dto/execute-node-response.dto';
 import { GetNodesResponseDto } from './dto/get-nodes-response.dto';
+
+const allDefinitions: NodeDefinition[] = [
+  startDefinition,
+  httpDefinition,
+  llmDefinition,
+  functionDefinition,
+  ifDefinition,
+  switchDefinition,
+  conditionDefinition,
+  combineDefinition,
+];
 
 @Injectable()
 export class ExecutionService {
@@ -41,8 +62,7 @@ export class ExecutionService {
   }
 
   async getNodeDefinitions(): Promise<GetNodesResponseDto> {
-    const definitions = getAllNodeDefinitions();
-    return { nodes: definitions, count: definitions.length };
+    return { nodes: allDefinitions, count: allDefinitions.length };
   }
 }
 

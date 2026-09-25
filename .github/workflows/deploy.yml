@@ -136,7 +136,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm turbo build --filter=web
+        run: pnpm turbo build --filter=@flowstack/ui
         env:
           VITE_API_BASE: ${{ secrets.VITE_API_URL }}
 
@@ -148,7 +148,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy to S3
-        run: aws s3 sync apps/web/dist s3://flowstack-web --delete
+        run: aws s3 sync apps/ui/dist s3://flowstack-web --delete
 
       - name: Invalidate CloudFront
         run: |
