@@ -53,7 +53,7 @@ export function NodeConfigDialog({ nodeData, definition, executionState, isOpen,
     const items = (configValues[casesField.id] ?? []) as Array<{ label: string; condition: string }>;
     const caseHandles: Handle[] = items.map((item, i) => ({
       id: `case-${i}`, label: item.label || `Case ${i + 1}`, type: 'output' as const,
-      schema: { type: 'any' }, fixed: false, schemaEditable: true,
+      schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true,
     }));
     const fixedHandles = definition.outputHandles.filter(h => h.fixed);
     setOutputHandles([...caseHandles, ...fixedHandles]);
@@ -303,7 +303,7 @@ function HandleRow({
         <span style={{
           fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--text-3)',
           backgroundColor: 'var(--surface-3)', padding: '1px 5px', borderRadius: 3,
-        }}>{handle.schema?.type ?? 'any'}</span>
+        }}>{handle.schema?.type ?? 'object'}</span>
       </div>
 
       {/* Data preview */}
@@ -347,7 +347,7 @@ function HandleRow({
                     Infer from data
                   </button>
                 )}
-                <SchemaBuilder schema={handle.schema} onChange={schema => onUpdate({ ...handle, schema })} />
+                <SchemaBuilder schema={handle.schema} lockType onChange={schema => onUpdate({ ...handle, schema })} />
               </div>
             )}
           </div>

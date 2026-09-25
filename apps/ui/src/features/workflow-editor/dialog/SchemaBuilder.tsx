@@ -15,9 +15,10 @@ interface Props {
   label?: string;
   showRequired?: boolean;
   level?: number;
+  lockType?: boolean;
 }
 
-export function SchemaBuilder({ schema, onChange, label, showRequired = false, level = 0 }: Props) {
+export function SchemaBuilder({ schema, onChange, label, showRequired = false, level = 0, lockType = false }: Props) {
   const handleTypeChange = (type: DataType) => {
     const updated: TypeSchema = { type };
     if (schema.required !== undefined) updated.required = schema.required;
@@ -30,14 +31,24 @@ export function SchemaBuilder({ schema, onChange, label, showRequired = false, l
     <div style={{ marginLeft: level * 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
         {label && <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-1)' }}>{label}</span>}
-        <select
-          value={schema.type}
-          onChange={e => handleTypeChange(e.target.value as DataType)}
-          className="input"
-          style={{ width: 140, fontSize: '0.75rem', padding: '3px 8px' }}
-        >
-          {TYPE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+        {lockType ? (
+          <span
+            className="input"
+            style={{ width: 140, fontSize: '0.75rem', padding: '3px 8px', color: 'var(--text-2)', display: 'inline-flex', alignItems: 'center', cursor: 'default' }}
+            title="Handle data is always an object"
+          >
+            Object
+          </span>
+        ) : (
+          <select
+            value={schema.type}
+            onChange={e => handleTypeChange(e.target.value as DataType)}
+            className="input"
+            style={{ width: 140, fontSize: '0.75rem', padding: '3px 8px' }}
+          >
+            {TYPE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        )}
         {showRequired && (
           <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', color: 'var(--text-2)', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={schema.required ?? false}
@@ -55,7 +66,7 @@ export function SchemaBuilder({ schema, onChange, label, showRequired = false, l
         </div>
       )}
 
-      {schema.type === 'object' && (
+      {(schema.type === 'object' || lockType) && (
         <div style={{ borderLeft: '2px solid var(--border)', paddingLeft: 12, marginTop: 4 }}>
           <p style={{ fontSize: '0.6875rem', color: 'var(--text-3)', marginBottom: 6 }}>Properties:</p>
           {schema.properties?.map((prop, i) => (

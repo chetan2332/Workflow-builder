@@ -12,15 +12,15 @@ export const switchDefinition: NodeDefinition = {
     id: 'in',
     label: 'Input',
     type: 'input',
-    schema: { type: 'any' },
+    schema: { type: 'object', properties: [] },
     fixed: true,
     schemaEditable: true
   }],
 
   outputHandles: [
-    { id: 'case1', label: 'Case 1', type: 'output', schema: { type: 'any' }, fixed: false, schemaEditable: true },
-    { id: 'case2', label: 'Case 2', type: 'output', schema: { type: 'any' }, fixed: false, schemaEditable: true },
-    { id: 'default', label: 'Default', type: 'output', schema: { type: 'any' }, fixed: true, schemaEditable: true }
+    { id: 'case1', label: 'Case 1', type: 'output', schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true },
+    { id: 'case2', label: 'Case 2', type: 'output', schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true },
+    { id: 'default', label: 'Default', type: 'output', schema: { type: 'object', properties: [] }, fixed: true, schemaEditable: true }
   ],
 
   dynamicHandles: {

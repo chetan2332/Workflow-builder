@@ -12,14 +12,14 @@ export const conditionDefinition: NodeDefinition = {
     id: 'in',
     label: 'Input',
     type: 'input',
-    schema: { type: 'any' },
+    schema: { type: 'object', properties: [] },
     fixed: true,
     schemaEditable: true
   }],
 
   outputHandles: [
-    { id: 'out1', label: 'Output 1', type: 'output', schema: { type: 'any' }, fixed: false, schemaEditable: true },
-    { id: 'out2', label: 'Output 2', type: 'output', schema: { type: 'any' }, fixed: false, schemaEditable: true }
+    { id: 'out1', label: 'Output 1', type: 'output', schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true },
+    { id: 'out2', label: 'Output 2', type: 'output', schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true }
   ],
 
   dynamicHandles: {

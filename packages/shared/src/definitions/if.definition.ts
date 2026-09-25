@@ -12,14 +12,14 @@ export const ifDefinition: NodeDefinition = {
     id: 'in',
     label: 'Input',
     type: 'input',
-    schema: { type: 'any' },
+    schema: { type: 'object', properties: [] },
     fixed: true,
     schemaEditable: true
   }],
 
   outputHandles: [
-    { id: 'true', label: 'True', type: 'output', schema: { type: 'any' }, fixed: true, schemaEditable: true },
-    { id: 'false', label: 'False', type: 'output', schema: { type: 'any' }, fixed: true, schemaEditable: true }
+    { id: 'true', label: 'True', type: 'output', schema: { type: 'object', properties: [] }, fixed: true, schemaEditable: true },
+    { id: 'false', label: 'False', type: 'output', schema: { type: 'object', properties: [] }, fixed: true, schemaEditable: true }
   ],
 
   dynamicHandles: {

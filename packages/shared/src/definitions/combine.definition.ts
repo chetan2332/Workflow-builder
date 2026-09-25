@@ -9,15 +9,15 @@ export const combineDefinition: NodeDefinition = {
   shape: NodeShape.OPPOSITE_D,
 
   inputHandles: [
-    { id: 'in1', label: 'Input 1', type: 'input', schema: { type: 'any' }, fixed: false, schemaEditable: true },
-    { id: 'in2', label: 'Input 2', type: 'input', schema: { type: 'any' }, fixed: false, schemaEditable: true }
+    { id: 'in1', label: 'Input 1', type: 'input', schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true },
+    { id: 'in2', label: 'Input 2', type: 'input', schema: { type: 'object', properties: [] }, fixed: false, schemaEditable: true }
   ],
 
   outputHandles: [{
     id: 'out',
     label: 'Output',
     type: 'output',
-    schema: { type: 'any' },
+    schema: { type: 'object', properties: [] },
     fixed: true,
     schemaEditable: true
   }],
