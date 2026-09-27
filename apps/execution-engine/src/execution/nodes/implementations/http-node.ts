@@ -33,6 +33,7 @@ export class HttpNode extends CodeNode {
       ? await response.json()
       : await response.text();
 
-    return result;
+    const responseKey = config.responseKey?.trim() || 'response';
+    return { [responseKey]: result };
   }
 }

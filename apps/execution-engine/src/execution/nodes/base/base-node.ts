@@ -50,6 +50,16 @@ export abstract class BaseNode {
   abstract execute(ctx: ExecutionContext): Promise<NodeOutput>;
 
   /**
+   * Assert every item in a handle's output array is a plain object.
+   * Enforces the "handle data is always keyed objects" contract.
+   */
+  protected assertObjectItem(item: unknown, handleId: string): void {
+    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+      throw new Error(`Output on handle '${handleId}' must be an object, got ${item === null ? 'null' : Array.isArray(item) ? 'array' : typeof item}`);
+    }
+  }
+
+  /**
    * Validate that input handles match definition
    */
   protected validateInputHandles(ctx: ExecutionContext): void {

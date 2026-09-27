@@ -98,6 +98,14 @@ export class WorkflowsService {
             throw new BadRequestException('Edges reference non-existent nodes');
         }
 
+        // Validate Function node code returns an object (lightweight static check)
+        for (const node of dto.nodes) {
+            if (node.type === 'code.function') {
+                const code = (node.configValues as any)?.code;
+                this.assertFunctionReturnsObject(code, node.label ?? node.id);
+            }
+        }
+
         // Execute transaction
         return this.prisma.$transaction(async (tx) => {
             // Update workflow metadata
@@ -234,6 +242,32 @@ export class WorkflowsService {
             maxWait: 5000,
             timeout: 10000,
         });
+    }
+
+    /**
+     * Lightweight static check that a Function node's code returns an object.
+     * Conservative: only rejects obvious violations (missing return, or a return
+     * of a primitive/array literal). Dynamic cases fall through to the runtime guard.
+     */
+    private assertFunctionReturnsObject(code: unknown, label: string): void {
+        if (typeof code !== 'string' || !code.trim()) {
+            throw new BadRequestException(`Function node "${label}": code is required`);
+        }
+
+        // Strip line and block comments before scanning
+        const stripped = code
+            .replace(/\/\*[\s\S]*?\*\//g, '')
+            .replace(/\/\/[^\n]*/g, '');
+
+        if (!/\breturn\b/.test(stripped)) {
+            throw new BadRequestException(`Function node "${label}": code must return an object`);
+        }
+
+        // Flag obvious non-object return literals: return <number|string|bool|null|array>
+        const badReturn = /\breturn\s+(-?\d|['"`]|true\b|false\b|null\b|\[)/;
+        if (badReturn.test(stripped)) {
+            throw new BadRequestException(`Function node "${label}": must return an object, e.g. return { key: value }`);
+        }
     }
 
     delete(id: string, userId: string) {

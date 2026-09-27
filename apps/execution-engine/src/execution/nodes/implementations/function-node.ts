@@ -52,7 +52,11 @@ export class FunctionNode extends CodeNode {
         throw new Error('Function did not return a value. Make sure your code has a return statement.');
       }
 
-      return JSON.parse(resultJson);
+      const result = JSON.parse(resultJson);
+      if (typeof result !== 'object' || result === null || Array.isArray(result)) {
+        throw new Error('Function must return an object (e.g. return { key: value }).');
+      }
+      return result;
     } catch (error: any) {
       if (error.message?.includes('Script execution timed out')) {
         throw new Error('Function execution timed out (5s limit)');

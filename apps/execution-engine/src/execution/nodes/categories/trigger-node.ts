@@ -15,6 +15,10 @@ export abstract class TriggerNode extends BaseNode {
 
     const payload = ctx.config.input?.payload ?? {};
 
+    if (typeof payload !== 'object' || payload === null || Array.isArray(payload)) {
+      throw new Error('Trigger payload must be an object');
+    }
+
     if (ctx.config.input?.schema) {
       ctx.tracker.log('Validating payload against input schema', 'info');
       const validation = validateData(payload, ctx.config.input.schema);
@@ -29,7 +33,7 @@ export abstract class TriggerNode extends BaseNode {
 
     return {
       outputs: { [outputHandleId]: [payload] },
-      metadata: { itemsProcessed: payload.length }
+      metadata: { itemsProcessed: 1 }
     };
   }
 }

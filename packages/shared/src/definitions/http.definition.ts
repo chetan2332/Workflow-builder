@@ -55,7 +55,8 @@ export const httpDefinition: NodeDefinition = {
       { name: 'method', schema: { type: 'string', required: true } },
       { name: 'url', schema: { type: 'string', required: true } },
       { name: 'headers', schema: { type: 'array', required: false } },
-      { name: 'body', schema: { type: 'any', required: false } }
+      { name: 'body', schema: { type: 'any', required: false } },
+      { name: 'responseKey', schema: { type: 'string', required: false } }
     ]
   },
 
@@ -93,6 +94,16 @@ export const httpDefinition: NodeDefinition = {
         required: false,
         showWhen: "config.method === 'POST' || config.method === 'PUT' || config.method === 'PATCH'",
         tab: 'request'
+      },
+      {
+        id: 'responseKey',
+        type: 'string',
+        label: 'Response Key',
+        required: false,
+        default: 'response',
+        placeholder: 'response',
+        description: 'The response body is placed under this key in the output object',
+        tab: 'request'
       }
     ],
     tabs: ['request']
@@ -103,5 +114,6 @@ export const httpDefinition: NodeDefinition = {
     url: '',
     headers: [],
     body: {},
+    responseKey: 'response',
   }
 };

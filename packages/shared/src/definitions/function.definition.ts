@@ -64,6 +64,7 @@ export const functionDefinition: NodeDefinition = {
         label: 'Function Code',
         required: true,
         language: 'javascript',
+        description: 'Must return an object, e.g. return { result: ... }',
         placeholder: '// Access input like: input.user, input.email\nreturn { result: input.value * 2 };',
         tab: 'code'
       }
@@ -72,6 +73,6 @@ export const functionDefinition: NodeDefinition = {
   },
 
   defaultConfigValues: {
-    code: '',
+    code: '// Access input like: input.user\nreturn {\n  \n};',
   }
 };

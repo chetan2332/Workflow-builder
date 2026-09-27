@@ -73,6 +73,9 @@ export abstract class CodeNode extends BaseNode {
           }
         }
 
+        // Enforce object-item contract on success output
+        this.assertObjectItem(result, successHandle.id);
+
         // Success - add to success results
         successResults.push(result);
 
